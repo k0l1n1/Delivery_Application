@@ -64,7 +64,7 @@ export default function HomePage() {
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black">
-              Hostel Food Menu
+              Food Menu
             </h1>
           </div>
 
