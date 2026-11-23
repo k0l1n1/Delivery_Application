@@ -109,40 +109,46 @@ export default function HomePage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Header & Search Bar */}
       <div className="space-y-4">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black dark:text-white transition-colors">
-          Food Menu
-        </h1>
+        <div className="flex items-baseline justify-between">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black dark:text-white transition-colors">
+            Food Menu
+          </h1>
+        </div>
 
         {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-noir-400 dark:text-noir-500" />
+        <div className="relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-noir-400 dark:text-noir-500 group-focus-within:text-black dark:group-focus-within:text-white transition-colors" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search menu..."
-            className="w-full pl-11 pr-10 py-3 rounded-full border border-noir-300 dark:border-noir-800 bg-noir-50 dark:bg-noir-900 focus:bg-white dark:focus:bg-black focus:outline-none focus:border-black dark:focus:border-white text-sm text-black dark:text-white placeholder:text-noir-400 dark:placeholder:text-noir-500 transition-all shadow-subtle"
+            className="w-full pl-11 pr-12 py-3 rounded-2xl border border-noir-200 dark:border-noir-800 bg-noir-50/70 dark:bg-[#111111] focus:bg-white dark:focus:bg-[#0A0A0A] focus:outline-none focus:border-black dark:focus:border-white focus:ring-1 focus:ring-black dark:focus:ring-white text-sm text-black dark:text-white placeholder:text-noir-400 dark:placeholder:text-noir-500 transition-all shadow-2xs"
           />
-          {searchQuery && (
+          {searchQuery ? (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-noir-400 hover:text-black dark:hover:text-white"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-noir-400 hover:text-black dark:hover:text-white p-0.5 rounded-full hover:bg-noir-200 dark:hover:bg-noir-800 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
+          ) : (
+            <span className="absolute right-4 top-1/2 -translate-y-1/2 hidden sm:inline-flex items-center text-[10px] font-mono text-noir-400 dark:text-noir-600 bg-white dark:bg-[#161616] border border-noir-200 dark:border-noir-800 px-1.5 py-0.5 rounded shadow-2xs select-none">
+              /
+            </span>
           )}
         </div>
       </div>
 
       {/* Food Categories Strip */}
-      <div className="border-b border-noir-200 dark:border-noir-800 pb-3 transition-colors">
+      <div className="border-b border-noir-200/80 dark:border-noir-800/80 pb-3 transition-colors">
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
           <button
             onClick={() => setSelectedCategory('all')}
-            className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+            className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
               selectedCategory === 'all'
-                ? 'bg-black text-white dark:bg-white dark:text-black'
-                : 'bg-noir-100 text-noir-700 hover:bg-noir-200 dark:bg-noir-900 dark:text-noir-300 dark:hover:bg-noir-800'
+                ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
+                : 'bg-white dark:bg-[#121212] text-noir-600 dark:text-noir-300 hover:text-black dark:hover:text-white border border-noir-200 dark:border-noir-800 hover:border-noir-300 dark:hover:border-noir-700'
             }`}
           >
             All
@@ -151,10 +157,10 @@ export default function HomePage() {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.slug)}
-              className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
                 selectedCategory === cat.slug
-                  ? 'bg-black text-white dark:bg-white dark:text-black'
-                  : 'bg-noir-100 text-noir-700 hover:bg-noir-200 dark:bg-noir-900 dark:text-noir-300 dark:hover:bg-noir-800'
+                  ? 'bg-black text-white dark:bg-white dark:text-black shadow-xs'
+                  : 'bg-white dark:bg-[#121212] text-noir-600 dark:text-noir-300 hover:text-black dark:hover:text-white border border-noir-200 dark:border-noir-800 hover:border-noir-300 dark:hover:border-noir-700'
               }`}
             >
               {cat.name}
@@ -166,9 +172,16 @@ export default function HomePage() {
       {/* Main Food Items Grid */}
       <div className="space-y-4">
         <div className="flex items-center justify-between text-xs font-mono text-noir-500 dark:text-noir-400">
-          <span>{filteredItems.length} Dishes Available for Delivery</span>
+          <span>
+            <strong className="text-black dark:text-white font-semibold">{filteredItems.length}</strong> Dishes Available for Delivery
+          </span>
           {selectedCategory !== 'all' && (
-            <span className="text-black dark:text-white font-semibold capitalize">Filter: {selectedCategory.replace('-', ' ')}</span>
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className="text-noir-500 hover:text-black dark:text-noir-400 dark:hover:text-white transition-colors"
+            >
+              Clear filter ×
+            </button>
           )}
         </div>
 

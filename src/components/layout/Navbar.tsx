@@ -43,7 +43,7 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setLocationSelectorOpen(!locationSelectorOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 text-xs text-noir-700 dark:text-noir-300 bg-noir-100 hover:bg-noir-200 dark:bg-noir-900 dark:hover:bg-noir-800 rounded-full border border-noir-200 dark:border-noir-800 transition-colors"
+                className="flex items-center gap-2 px-3.5 py-1.5 text-xs text-noir-700 dark:text-noir-300 bg-noir-100/80 hover:bg-noir-200/80 dark:bg-[#141414] dark:hover:bg-[#1a1a1a] rounded-full border border-noir-200 dark:border-noir-800 transition-all"
               >
                 <Building2 className="w-3.5 h-3.5 text-black dark:text-white flex-shrink-0" />
                 <span className="font-medium text-black dark:text-white truncate max-w-[140px] sm:max-w-[220px]">
