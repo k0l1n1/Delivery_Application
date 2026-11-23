@@ -4,42 +4,32 @@ import React, { useState } from 'react';
 import { useAuth } from '@/lib/store/auth-context';
 import { useOrders } from '@/lib/store/order-store';
 import { MOCK_RESTAURANTS } from '@/lib/data/mock-data';
-import { FoodItem, OrderStatus } from '@/types/database';
+import { FoodItem } from '@/types/database';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import {
   Store,
-  DollarSign,
-  TrendingUp,
-  Clock,
-  Check,
-  X,
+  ChefHat,
   Plus,
   Trash2,
-  ChefHat,
-  ShoppingBag,
-  ToggleLeft,
-  ToggleRight,
-  ShieldAlert,
+  Building2,
+  Package,
 } from 'lucide-react';
 
 export default function RestaurantOwnerDashboard() {
   const { user } = useAuth();
   const { orders, updateOrderStatus } = useOrders();
 
-  // Find owner's restaurant
   const [restaurant, setRestaurant] = useState(MOCK_RESTAURANTS[0]);
   const [items, setItems] = useState<FoodItem[]>(restaurant.items || []);
   const [activeTab, setActiveTab] = useState<'orders' | 'menu' | 'analytics'>('orders');
 
-  // Add Item Modal
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [newItemName, setNewItemName] = useState('');
   const [newItemPrice, setNewItemPrice] = useState('');
   const [newItemDesc, setNewItemDesc] = useState('');
   const [newItemVeg, setNewItemVeg] = useState(true);
-  const [newItemCategory, setNewItemCategory] = useState('Japanese');
+  const [newItemCategory, setNewItemCategory] = useState('Midnight Snacks');
 
-  // Restaurant orders
   const restaurantOrders = orders.filter((o) => o.restaurant_id === restaurant.id || true);
 
   const toggleItemAvailability = (itemId: string) => {
@@ -63,11 +53,11 @@ export default function RestaurantOwnerDashboard() {
       slug: newItemName.toLowerCase().replace(/\s+/g, '-'),
       description: newItemDesc,
       price: Math.round(parseFloat(newItemPrice) * 100),
-      image_url: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80',
+      image_url: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=600&q=80',
       is_veg: newItemVeg,
       is_available: true,
       category_name: newItemCategory,
-      preparation_time_minutes: 20,
+      preparation_time_minutes: 10,
     };
 
     setItems([created, ...items]);
@@ -77,7 +67,6 @@ export default function RestaurantOwnerDashboard() {
     setNewItemDesc('');
   };
 
-  // Metrics
   const totalRevenue = restaurantOrders.reduce((acc, o) => acc + o.subtotal_amount, 0);
   const activeOrdersCount = restaurantOrders.filter(
     (o) => o.status !== 'delivered' && o.status !== 'cancelled'
@@ -91,11 +80,11 @@ export default function RestaurantOwnerDashboard() {
           <div className="flex items-center gap-2">
             <Store className="w-5 h-5 text-black" />
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black">
-              {restaurant.name} Atelier Portal
+              {restaurant.name} Kitchen Portal
             </h1>
           </div>
           <p className="text-xs text-noir-500 font-mono">
-            Executive Chef: {user?.full_name || 'Chef Antoine'} • Rating: {restaurant.rating}★
+            Canteen Incharge: {user?.full_name || 'Mr. Ramesh Chand'} • Serving All Hostels
           </p>
         </div>
 
@@ -106,7 +95,7 @@ export default function RestaurantOwnerDashboard() {
               activeTab === 'orders' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Live Kitchen Orders ({activeOrdersCount})
+            Hostel Kitchen Tickets ({activeOrdersCount})
           </button>
           <button
             onClick={() => setActiveTab('menu')}
@@ -114,7 +103,7 @@ export default function RestaurantOwnerDashboard() {
               activeTab === 'menu' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Manage Menu ({items.length})
+            Canteen Menu Items ({items.length})
           </button>
           <button
             onClick={() => setActiveTab('analytics')}
@@ -122,7 +111,7 @@ export default function RestaurantOwnerDashboard() {
               activeTab === 'analytics' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Revenue Analytics
+            Hostel Sales Analytics
           </button>
         </div>
       </div>
@@ -130,31 +119,31 @@ export default function RestaurantOwnerDashboard() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Gross Sales Today</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Today&apos;s Canteen Sales</p>
           <p className="text-2xl font-bold font-mono text-black">{formatCurrency(totalRevenue)}</p>
-          <p className="text-[11px] text-emerald-600 font-mono">+18.4% from yesterday</p>
+          <p className="text-[11px] text-emerald-600 font-mono">Exam season demand high</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Active Kitchen Orders</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Pending Hostel Orders</p>
           <p className="text-2xl font-bold font-mono text-black">{activeOrdersCount}</p>
-          <p className="text-[11px] text-noir-500 font-mono">Real-time status synced</p>
+          <p className="text-[11px] text-noir-500 font-mono">Awaiting cooking or dispatch</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Average Preparation</p>
-          <p className="text-2xl font-bold font-mono text-black">18 mins</p>
-          <p className="text-[11px] text-emerald-600 font-mono">Optimal culinary rhythm</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Average Prep Speed</p>
+          <p className="text-2xl font-bold font-mono text-black">9 mins</p>
+          <p className="text-[11px] text-emerald-600 font-mono">Fast night turnaround</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Customer Satisfaction</p>
-          <p className="text-2xl font-bold font-mono text-black">4.95 / 5.0</p>
-          <p className="text-[11px] text-noir-500 font-mono">Based on 348 reviews</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Student Satisfaction</p>
+          <p className="text-2xl font-bold font-mono text-black">4.92 / 5.0</p>
+          <p className="text-[11px] text-noir-500 font-mono">840 student ratings</p>
         </div>
       </div>
 
-      {/* Tab 1: Live Kitchen Orders */}
+      {/* Tab 1: Live Kitchen Tickets */}
       {activeTab === 'orders' && (
         <div className="space-y-4">
-          <h2 className="text-lg font-bold text-black">Incoming & Active Kitchen Tickets</h2>
+          <h2 className="text-lg font-bold text-black">Active Orders for Hostel Room Dispatch</h2>
 
           <div className="space-y-4">
             {restaurantOrders.map((order) => (
@@ -168,7 +157,7 @@ export default function RestaurantOwnerDashboard() {
                       #{order.order_number}
                     </span>
                     <span className="text-xs text-noir-500 ml-2 font-mono">
-                      Placed {formatDate(order.created_at)} • {order.customer_name}
+                      {order.customer_name} ({order.student_roll_no || 'Student'})
                     </span>
                   </div>
 
@@ -181,6 +170,19 @@ export default function RestaurantOwnerDashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                   <div className="md:col-span-8 space-y-2">
+                    {/* Destination Room */}
+                    <div className="flex items-center gap-2 text-xs bg-noir-50 p-2.5 rounded-xl border border-noir-200">
+                      <Building2 className="w-4 h-4 text-black flex-shrink-0" />
+                      <div>
+                        <strong className="text-black">
+                          {order.delivery_address.room_number || 'Room'} • {order.delivery_address.floor || 'Floor'}
+                        </strong>
+                        <span className="text-noir-600 ml-1">
+                          ({order.delivery_address.hostel_name}, {order.delivery_address.block_wing})
+                        </span>
+                      </div>
+                    </div>
+
                     <div className="space-y-1">
                       {order.items.map((i) => (
                         <div key={i.id} className="text-xs flex items-center justify-between">
@@ -194,7 +196,7 @@ export default function RestaurantOwnerDashboard() {
 
                     {order.special_instructions && (
                       <p className="text-xs text-noir-500 italic bg-noir-50 p-2 rounded-xl border border-noir-200">
-                        Chef Note: &ldquo;{order.special_instructions}&rdquo;
+                        Student Note: &ldquo;{order.special_instructions}&rdquo;
                       </p>
                     )}
                   </div>
@@ -205,7 +207,7 @@ export default function RestaurantOwnerDashboard() {
                         onClick={() => updateOrderStatus(order.id, 'confirmed')}
                         className="w-full py-2.5 rounded-full bg-black text-white hover:bg-noir-800 text-xs font-semibold transition-colors"
                       >
-                        Accept & Confirm Ticket
+                        Accept & Start Cooking
                       </button>
                     )}
                     {order.status === 'confirmed' && (
@@ -213,7 +215,7 @@ export default function RestaurantOwnerDashboard() {
                         onClick={() => updateOrderStatus(order.id, 'preparing')}
                         className="w-full py-2.5 rounded-full bg-black text-white hover:bg-noir-800 text-xs font-semibold transition-colors flex items-center justify-center gap-1.5"
                       >
-                        <ChefHat className="w-4 h-4" /> Start Food Preparation
+                        <ChefHat className="w-4 h-4" /> Thermal Pack & Seal
                       </button>
                     )}
                     {order.status === 'preparing' && (
@@ -221,7 +223,7 @@ export default function RestaurantOwnerDashboard() {
                         onClick={() => updateOrderStatus(order.id, 'ready')}
                         className="w-full py-2.5 rounded-full bg-emerald-700 text-white hover:bg-emerald-800 text-xs font-semibold transition-colors"
                       >
-                        Mark Ready for Vault Pickup
+                        Mark Ready for Campus Runner
                       </button>
                     )}
                     {order.status === 'ready' && (
@@ -229,17 +231,17 @@ export default function RestaurantOwnerDashboard() {
                         onClick={() => updateOrderStatus(order.id, 'out_for_delivery')}
                         className="w-full py-2.5 rounded-full bg-black text-white text-xs font-semibold transition-colors"
                       >
-                        Handover to Courier
+                        Handover to Runner
                       </button>
                     )}
                     {order.status === 'out_for_delivery' && (
                       <span className="text-center text-xs font-mono text-noir-500 py-2">
-                        Courier en route to residence
+                        Runner climbing to {order.delivery_address.room_number || 'Room'}
                       </span>
                     )}
                     {order.status === 'delivered' && (
                       <span className="text-center text-xs font-mono text-emerald-600 py-2 font-bold">
-                        Order Completed & Delivered
+                        Delivered to Student
                       </span>
                     )}
                   </div>
@@ -254,13 +256,13 @@ export default function RestaurantOwnerDashboard() {
       {activeTab === 'menu' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-black">Menu Catalogue & Availability</h2>
+            <h2 className="text-lg font-bold text-black">Canteen Food Items</h2>
             <button
               onClick={() => setIsAddItemOpen(true)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-black text-white hover:bg-noir-800 text-xs font-semibold transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Add New Dish</span>
+              <span>Add Canteen Dish</span>
             </button>
           </div>
 
@@ -290,7 +292,6 @@ export default function RestaurantOwnerDashboard() {
                 </div>
 
                 <div className="flex items-center gap-4">
-                  {/* Toggle availability */}
                   <button
                     onClick={() => toggleItemAvailability(item.id)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border transition-colors ${
@@ -315,22 +316,22 @@ export default function RestaurantOwnerDashboard() {
         </div>
       )}
 
-      {/* Tab 3: Sales Analytics */}
+      {/* Tab 3: Analytics */}
       {activeTab === 'analytics' && (
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-3xl border border-noir-200 shadow-subtle space-y-4">
-            <h3 className="font-bold text-sm text-black">Weekly Sales Velocity</h3>
+            <h3 className="font-bold text-sm text-black">Hostel Delivery Volume by Block</h3>
             <div className="h-48 flex items-end gap-4 pt-6 border-b border-noir-200">
               {[
-                { day: 'Mon', height: '60%', amount: '₹14,500' },
-                { day: 'Tue', height: '45%', amount: '₹11,200' },
-                { day: 'Wed', height: '80%', amount: '₹19,800' },
-                { day: 'Thu', height: '70%', amount: '₹17,400' },
-                { day: 'Fri', height: '95%', amount: '₹24,500' },
-                { day: 'Sat', height: '100%', amount: '₹28,900' },
-                { day: 'Sun', height: '90%', amount: '₹22,100' },
+                { block: 'BH-1', height: '65%', amount: '₹8,500' },
+                { block: 'BH-2', height: '95%', amount: '₹14,200' },
+                { block: 'BH-3', height: '55%', amount: '₹7,100' },
+                { block: 'GH-1', height: '85%', amount: '₹11,400' },
+                { block: 'GH-2', height: '75%', amount: '₹9,800' },
+                { block: 'GH-3', height: '60%', amount: '₹7,800' },
+                { block: 'Library', height: '100%', amount: '₹16,500' },
               ].map((bar) => (
-                <div key={bar.day} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
+                <div key={bar.block} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
                   <div
                     style={{ height: bar.height }}
                     className="w-full max-w-[40px] bg-black rounded-t-lg hover:bg-noir-800 transition-all cursor-pointer relative group"
@@ -339,12 +340,12 @@ export default function RestaurantOwnerDashboard() {
                       {bar.amount}
                     </div>
                   </div>
-                  <span className="text-xs font-mono text-noir-500">{bar.day}</span>
+                  <span className="text-xs font-mono text-noir-500">{bar.block}</span>
                 </div>
               ))}
             </div>
             <p className="text-xs text-noir-500 font-mono">
-              Peak culinary volume observed on Friday & Saturday evening services.
+              Peak demand spikes observed between 11:30 PM - 2:30 AM in Library & BH-2.
             </p>
           </div>
         </div>
@@ -354,7 +355,7 @@ export default function RestaurantOwnerDashboard() {
       {isAddItemOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 border border-noir-200 shadow-2xl space-y-4">
-            <h3 className="font-bold text-base text-black">Create New Menu Creation</h3>
+            <h3 className="font-bold text-base text-black">Add Canteen Menu Dish</h3>
 
             <form onSubmit={handleAddNewItem} className="space-y-3">
               <div>
@@ -364,37 +365,37 @@ export default function RestaurantOwnerDashboard() {
                   required
                   value={newItemName}
                   onChange={(e) => setNewItemName(e.target.value)}
-                  placeholder="e.g. Binchotan Grilled Turbot"
+                  placeholder="e.g. Schezwan Fried Maggi"
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Price in Rupees (₹)</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Student Price (₹)</label>
                 <input
                   type="number"
                   required
                   value={newItemPrice}
                   onChange={(e) => setNewItemPrice(e.target.value)}
-                  placeholder="950"
+                  placeholder="70"
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Culinary Description</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Description</label>
                 <textarea
                   required
                   value={newItemDesc}
                   onChange={(e) => setNewItemDesc(e.target.value)}
-                  placeholder="Describe ingredients, cooking techniques, and accompaniments..."
+                  placeholder="e.g. Double Maggi noodles with veggies and fiery schezwan sauce..."
                   rows={2}
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Dietary Classification</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Dietary Type</label>
                 <div className="flex gap-2 pt-1">
                   <button
                     type="button"
@@ -429,7 +430,7 @@ export default function RestaurantOwnerDashboard() {
                   type="submit"
                   className="flex-1 py-2.5 rounded-full bg-black text-white text-xs font-semibold hover:bg-noir-800"
                 >
-                  Add to Menu
+                  Add Dish
                 </button>
               </div>
             </form>

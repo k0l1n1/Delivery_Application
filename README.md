@@ -1,162 +1,70 @@
-# NOIR – Premium Food Delivery Platform
+# NOIR – Campus & Hostel Food Delivery Platform
 
-A production-quality food delivery web application engineered with a minimalist, luxury black-and-white design aesthetic inspired by Apple, Linear, and high-end gastronomic dining.
+A production-quality food delivery web application engineered specifically for **college and university students to order late-night food, mess upgrades, snacks, and beverages directly to their hostel room doorstep**.
 
-![NOIR Platform](https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=1200&q=85)
+Designed in a minimal, luxury black-and-white aesthetic (Apple & Linear inspired).
 
----
-
-## 1. Core Architecture & Technology Stack
-
-### Frontend:
-- **Next.js 15 (App Router)** – Server components, client interactivity, and dynamic routing
-- **React 19 & TypeScript** – Strict type-safety across database models, cart, and orders
-- **Tailwind CSS** – Monochrome color tokens, responsive utilities, and elevation shadows
-- **Lucide React** – Minimal iconography
-- **Canvas Confetti** – Seamless celebration feedback upon successful checkout
-
-### Backend & API:
-- **Next.js Server Actions & Route Handlers** (`/api/payments/razorpay/*`)
-- **Node.js Crypto** – Server-side HMAC-SHA256 payment signature verification
-
-### Database & Security:
-- **Supabase PostgreSQL** – 18 normalized tables with Row Level Security (RLS)
-- **Monetary standard** – Prices stored strictly as integers in **Paise** (1 INR = 100 Paise) to avoid floating-point errors
-- **Supabase Realtime & Auth** – Role-based access control with seamless local fallback persistence
-
-### Payments:
-- **Razorpay Integration** – Indian payment gateway for Cards, UPI, Netbanking, and Wallets
-- **Cash on Delivery (COD)** – Supported with server-side validation
+![NOIR Campus Hostel Food Delivery](https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=1200&q=85)
 
 ---
 
-## 2. Design System – Premium Monochrome
+## 1. Tailored for Campus & Hostel Living
 
-| Token | Hex Code | Purpose |
-|---|---|---|
-| Primary Background | `#FFFFFF` | Default page and view background |
-| Primary Text | `#000000` | Bold typographic headings and titles |
-| Secondary Background | `#F5F5F5` | Subdued surface cards and pills |
-| Borders | `#E5E5E5` | Minimal 1px hairline card borders |
-| Secondary Text | `#737373` | Subtitles, culinary descriptions, meta information |
-| Dark Sections | `#000000` | Footer, highlight banners, primary action buttons |
-| Dark Section Text | `#FFFFFF` | High-contrast readable typography |
+Unlike generic restaurant delivery apps, **NOIR Hostel** is optimized for on-campus logistics:
+
+- **Direct Room & Floor Delivery**: Students enter their **Hostel Name** (e.g. *Boys Hostel 2 - Aravali*, *Girls Hostel 1 - Kailash*), **Block/Wing**, **Floor**, and **Room Number**.
+- **Student-Friendly Pricing**: Budget-conscious pricing for cheese Maggi, kathi rolls, egg parathas, mess upgrades, and iced coffee (₹40 – ₹190).
+- **Exam & Night Owl Hours**: Operating till **4:00 AM** with active campus bicycle runners.
+- **Convenient Payment**: Instant Razorpay UPI (Google Pay, PhonePe, Paytm) + Cash or UPI on Room Drop-off.
+- **Campus Runner Tip**: Minimal flat ₹10 runner fee (waived on orders over ₹150).
 
 ---
 
-## 3. Application Modules & Portals
+## 2. Portals & Personas
 
-### A. Customer Experience
-1. **Homepage (`/`)**:
-   - Hero: *"GOOD FOOD. DELIVERED DIFFERENTLY."*
-   - Location Selector (Mumbai, Bengaluru, Delhi)
-   - Food Categories (Burgers, Pizza, Indian, Chinese, Biryani, Desserts, Healthy Food, Beverages, Bakery, Fast Food)
-   - Curated Restaurants and Trending Dishes
-   - Promo vouchers (`NOIRFIRST`, `BLACKCARD`)
-   - 3-Step NOIR Standard: Selection, Thermal Transit, White-glove delivery
-   - Customer Testimonials
+Switch instantly with the persistent top **Role Switcher Bar**:
 
-2. **Restaurant Discovery (`/restaurants`)**:
-   - Search by restaurant name, food item, or cuisine
-   - Dynamic filters: Cuisine category, price range (`₹` to `₹₹₹₹`), minimum rating (4.5★, 4.8★, 4.9★), and max delivery time
-   - Sorting: Most Popular, Highest Rated, Fastest Delivery
+1. **Hostel Student** (`/`):
+   - Choose hostel from top location selector
+   - Order midnight Maggi, rolls, thalis, and study drinks
+   - Real-time room tracking with simulated runner arrival
+   - Student profile with saved hostel rooms and 1-click reorder
 
-3. **Restaurant Detail (`/restaurants/[slug]`)**:
-   - Atelier cover image, delivery pace, rating, cuisine list, and operating hours
-   - Interactive category tabs and *Veg Only* dietary toggle
-   - Dish customization modal: portion sizes, toppings, crusts, and accompaniments
+2. **Canteen Kitchen Manager** (`/restaurant/dashboard`):
+   - Real-time kitchen tickets tagged with **Hostel Name, Block & Room Number**
+   - Advance ticket statuses: Accept → Cooking & Thermal Seal → Handover to Runner
+   - Menu management: Add dishes, change student prices, toggle sold-out
 
-4. **Shopping Cart (`/cart`)**:
-   - Real-time subtotal, GST (5%), delivery fees (free on orders > ₹1,500), and coupon discount
-   - Quantity adjustment stepper with multi-restaurant conflict prevention
+3. **Hostel Floor Runner** (`/delivery/dashboard`):
+   - Online/Offline duty toggle
+   - Pickup from Student Activity Center (SAC) Canteen
+   - Direct drop-off at hostel room doorstep with student call button
+   - Daily runner payout wallet & delivery stats
 
-5. **Checkout Experience (`/checkout`)**:
-   - Multi-residence address selector & "Add New Residence" modal
-   - Special chef and gate delivery instructions
-   - Payment selection: Razorpay (Cards / UPI / NetBanking) or Cash on Delivery
-   - Server-side cryptographic signature verification
-
-6. **Live Order Tracking (`/orders/[id]`)**:
-   - 6 Live Statuses: `placed` → `confirmed` → `preparing` → `ready` → `out_for_delivery` → `delivered`
-   - Real-time Status Simulator controls for immediate testing
-   - Interactive route map showing moving courier EV marker between atelier and residence
-   - Courier contact details and direct dial
-
-7. **Customer Profile (`/profile`)**:
-   - Registered residences management
-   - Complete order history with one-click **Reorder** functionality
+4. **Warden & Dining Admin** (`/admin/dashboard`):
+   - Overview of hostel delivery volume per block (BH-1, BH-2, GH-1, Library)
+   - Issue student privilege codes (`EXAMNIGHT`, `HOSTELMATE`)
+   - Platform audit log and night delivery compliance
 
 ---
 
-### B. Role-Based Dashboards
+## 3. Technology Stack
 
-Switch instantly between roles using the persistent **Role Switcher Bar** at the top of every page:
-
-1. **Restaurant Owner Dashboard (`/restaurant/dashboard`)**:
-   - Real-time incoming kitchen order tickets
-   - Advance order stages (`Accept` → `Prepare` → `Ready for Pickup`)
-   - Menu Catalogue management: Add new dishes, edit prices, toggle item availability (in-stock / sold out), delete items
-   - Sales velocity charts and revenue analytics
-
-2. **Delivery Partner Dashboard (`/delivery/dashboard`)**:
-   - Online / Offline availability toggle switch
-   - Active dispatch assignments with restaurant pickup and residence drop-off coordinates
-   - One-click status triggers: Confirm pickup and mark delivered
-   - Payout wallet balance & completed trip history
-
-3. **Platform Admin Governance (`/admin/dashboard`)**:
-   - Platform KPIs: GMV, net commission revenue (15%), verified ateliers, electric couriers, and total orders
-   - Restaurant verification & approval
-   - Promotional coupon manager: create percentage or flat rupee discount codes
-   - Complete platform audit log table
+- **Framework**: Next.js 15 (App Router), React 19, TypeScript
+- **Styling**: Tailwind CSS (Monochrome Black & White palette), Lucide React
+- **Payments**: Razorpay UPI & Cards integration + Cash/UPI on Delivery
+- **Database**: Supabase PostgreSQL normalized schema with 18 tables + local fallback engine
+- **Map Telemetry**: Interactive vector campus route map with moving bicycle runner animation
 
 ---
 
-## 4. Database Schema (`supabase/schema.sql`)
+## 4. Run Locally
 
-The database contains 18 normalized tables:
-- `profiles`
-- `addresses`
-- `restaurants`
-- `restaurant_users`
-- `food_categories`
-- `food_items`
-- `food_customizations`
-- `carts`
-- `cart_items`
-- `orders`
-- `order_items`
-- `payments`
-- `delivery_partners`
-- `deliveries`
-- `reviews`
-- `coupons`
-- `favorites`
-- `notifications`
-
-### Applying to Supabase:
-1. Create a project at [supabase.com](https://supabase.com).
-2. Open the **SQL Editor** in the Supabase Dashboard.
-3. Paste and execute `supabase/schema.sql`.
-4. Paste and execute `supabase/seed.sql` to populate initial restaurants and menus.
-
----
-
-## 5. Local Setup & Installation
-
-### Prerequisites:
-- Node.js 18+ (tested on Node 20 / 24)
-- npm or pnpm
-
-### Steps:
 ```bash
-# 1. Install dependencies
+# Install dependencies
 npm install
 
-# 2. Configure environment variables (optional for local mock mode)
-cp .env.example .env.local
-
-# 3. Start development server
+# Start development server
 npm run dev
 ```
 
@@ -164,13 +72,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 
 ---
 
-## 6. Deployment to Vercel
+## 5. Deployment
 
-1. Push this repository to GitHub or GitLab.
-2. Import the project into [Vercel](https://vercel.com).
-3. Set the environment variables in Vercel Project Settings:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `NEXT_PUBLIC_RAZORPAY_KEY_ID`
-   - `RAZORPAY_KEY_SECRET`
-4. Click **Deploy**.
+Ready for zero-config deployment on **Vercel** with **Supabase**.
+Configure environment variables using `.env.example`.

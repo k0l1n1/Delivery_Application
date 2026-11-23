@@ -7,20 +7,18 @@ import { useAuth } from '@/lib/store/auth-context';
 import { useOrders } from '@/lib/store/order-store';
 import { useCart } from '@/lib/store/cart-store';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { MOCK_RESTAURANTS } from '@/lib/data/mock-data';
+import { MOCK_RESTAURANTS, HOSTEL_LIST } from '@/lib/data/mock-data';
 import {
-  User,
-  MapPin,
+  Building2,
   Package,
   Heart,
-  CreditCard,
   LogOut,
   Plus,
   Trash2,
   ArrowRight,
   RotateCcw,
-  ShieldCheck,
   Check,
+  GraduationCap,
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -29,44 +27,45 @@ export default function ProfilePage() {
   const { orders } = useOrders();
   const { addItem, clearCart } = useCart();
 
-  const [activeTab, setActiveTab] = useState<'orders' | 'addresses' | 'favorites' | 'settings'>('orders');
-  const [isAddAddressOpen, setIsAddAddressOpen] = useState(false);
-  const [newStreet, setNewStreet] = useState('');
+  const [activeTab, setActiveTab] = useState<'orders' | 'rooms' | 'favorites'>('orders');
+  const [isAddRoomOpen, setIsAddRoomOpen] = useState(false);
+  const [newHostel, setNewHostel] = useState(HOSTEL_LIST[0]);
+  const [newBlock, setNewBlock] = useState('Block B');
+  const [newFloor, setNewFloor] = useState('2nd Floor');
+  const [newRoom, setNewRoom] = useState('');
   const [newLandmark, setNewLandmark] = useState('');
-  const [newPostal, setNewPostal] = useState('');
-  const [newLabel, setNewLabel] = useState<'Home' | 'Work' | 'Other'>('Home');
 
   if (!user) {
     return (
       <div className="max-w-xl mx-auto py-24 px-4 text-center space-y-4">
-        <h2 className="text-xl font-bold">Please sign in to view your profile</h2>
+        <h2 className="text-xl font-bold">Please sign in with your student credentials</h2>
         <Link
           href="/auth/login"
           className="inline-block px-6 py-2.5 rounded-full bg-black text-white text-xs font-semibold"
         >
-          Sign In
+          Student Sign In
         </Link>
       </div>
     );
   }
 
-  const handleCreateAddress = (e: React.FormEvent) => {
+  const handleCreateRoom = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newStreet.trim() || !newPostal.trim()) return;
+    if (!newRoom.trim()) return;
 
     addAddress({
-      label: newLabel,
-      street_address: newStreet,
+      label: 'Hostel Room',
+      hostel_name: newHostel,
+      block_wing: newBlock,
+      floor: newFloor,
+      room_number: newRoom.startsWith('Room') ? newRoom : `Room ${newRoom}`,
       landmark: newLandmark,
-      city: 'Mumbai',
-      postal_code: newPostal,
       is_default: false,
     });
 
-    setIsAddAddressOpen(false);
-    setNewStreet('');
+    setIsAddRoomOpen(false);
+    setNewRoom('');
     setNewLandmark('');
-    setNewPostal('');
   };
 
   const handleReorder = (order: (typeof orders)[0]) => {
@@ -80,7 +79,7 @@ export default function ProfilePage() {
         slug: 'item',
         description: '',
         price: item.unit_price,
-        image_url: 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80',
+        image_url: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=400&q=80',
         is_veg: true,
         is_available: true,
       };
@@ -101,7 +100,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-extrabold text-black">{user.full_name}</h1>
               <span className="text-[10px] font-mono uppercase bg-noir-100 text-black px-2 py-0.5 rounded-full border border-noir-300">
-                {user.role}
+                {user.roll_number || 'Hostel Student'}
               </span>
             </div>
             <p className="text-xs text-noir-500 font-mono">{user.email} • {user.phone}</p>
@@ -126,16 +125,16 @@ export default function ProfilePage() {
           }`}
         >
           <Package className="w-4 h-4" />
-          <span>Order History ({orders.length})</span>
+          <span>Hostel Orders ({orders.length})</span>
         </button>
         <button
-          onClick={() => setActiveTab('addresses')}
+          onClick={() => setActiveTab('rooms')}
           className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
-            activeTab === 'addresses' ? 'bg-black text-white' : 'text-noir-600 hover:bg-noir-100'
+            activeTab === 'rooms' ? 'bg-black text-white' : 'text-noir-600 hover:bg-noir-100'
           }`}
         >
-          <MapPin className="w-4 h-4" />
-          <span>Saved Residences ({addresses.length})</span>
+          <Building2 className="w-4 h-4" />
+          <span>Saved Hostel Rooms ({addresses.length})</span>
         </button>
         <button
           onClick={() => setActiveTab('favorites')}
@@ -144,7 +143,7 @@ export default function ProfilePage() {
           }`}
         >
           <Heart className="w-4 h-4" />
-          <span>Saved Ateliers</span>
+          <span>Favorite Canteens</span>
         </button>
       </div>
 
@@ -174,6 +173,9 @@ export default function ProfilePage() {
                   </div>
 
                   <p className="text-sm font-semibold text-black">{order.restaurant_name}</p>
+                  <p className="text-xs text-noir-600">
+                    Delivered to: <strong className="text-black">{order.delivery_address.room_number || 'Room'}</strong>, {order.delivery_address.hostel_name}
+                  </p>
                   <p className="text-xs text-noir-500 font-mono">
                     {order.items.map((i) => `${i.quantity}x ${i.food_name}`).join(', ')}
                   </p>
@@ -194,7 +196,7 @@ export default function ProfilePage() {
                     href={`/orders/${order.id}`}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-black text-white hover:bg-noir-800 text-xs font-semibold transition-colors"
                   >
-                    <span>Track Order</span>
+                    <span>Track Runner</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -202,23 +204,23 @@ export default function ProfilePage() {
             ))
           ) : (
             <div className="py-16 text-center bg-noir-50 rounded-3xl border border-noir-200 space-y-2">
-              <p className="font-bold text-black">No past gourmet orders recorded</p>
-              <p className="text-xs text-noir-500">Your future reservations and orders will appear here.</p>
+              <p className="font-bold text-black">No past hostel orders found</p>
+              <p className="text-xs text-noir-500">Your late-night study orders and mess upgrades will appear here.</p>
             </div>
           )}
         </div>
       )}
 
-      {activeTab === 'addresses' && (
+      {activeTab === 'rooms' && (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h3 className="font-bold text-sm text-black">Your Registered Residences</h3>
+            <h3 className="font-bold text-sm text-black">Your Registered Hostel Rooms</h3>
             <button
-              onClick={() => setIsAddAddressOpen(true)}
+              onClick={() => setIsAddRoomOpen(true)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-black text-white hover:bg-noir-800 text-xs font-semibold transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Add Residence</span>
+              <span>Add Room</span>
             </button>
           </div>
 
@@ -230,18 +232,20 @@ export default function ProfilePage() {
               >
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold font-mono text-xs uppercase">{addr.label}</span>
+                    <span className="font-bold font-mono text-xs uppercase text-black">
+                      {addr.room_number || addr.label}
+                    </span>
                     {addr.is_default && (
                       <span className="text-[10px] font-mono uppercase bg-noir-100 text-black px-2 py-0.5 rounded-full border border-noir-300">
-                        Primary Default
+                        Primary Room
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-noir-700">{addr.street_address}</p>
-                  {addr.landmark && <p className="text-xs text-noir-500">{addr.landmark}</p>}
-                  <p className="text-[11px] font-mono text-noir-400">
-                    {addr.city} • {addr.postal_code}
+                  <p className="text-xs font-semibold text-black">{addr.hostel_name}</p>
+                  <p className="text-xs text-noir-600 font-mono">
+                    {addr.block_wing} • {addr.floor}
                   </p>
+                  {addr.landmark && <p className="text-xs text-noir-400 italic">Near: {addr.landmark}</p>}
                 </div>
 
                 <div className="pt-2 border-t border-noir-100 flex items-center justify-between">
@@ -250,7 +254,7 @@ export default function ProfilePage() {
                       onClick={() => setDefaultAddress(addr.id)}
                       className="text-xs text-noir-600 hover:text-black font-semibold font-mono"
                     >
-                      Set as Primary
+                      Set as Default Room
                     </button>
                   ) : (
                     <span className="text-xs text-emerald-600 font-mono flex items-center gap-1">
@@ -285,78 +289,88 @@ export default function ProfilePage() {
               <div className="flex-1 space-y-1">
                 <h4 className="font-bold text-sm">{r.name}</h4>
                 <p className="text-xs text-noir-500">{r.cuisines.join(' • ')}</p>
-                <p className="text-xs font-mono font-bold">{r.rating}★ ({r.rating_count})</p>
+                <p className="text-xs font-mono font-bold">{r.rating}★ ({r.rating_count} students)</p>
               </div>
               <Link
                 href={`/restaurants/${r.slug}`}
                 className="px-3 py-1.5 rounded-full bg-black text-white text-xs font-semibold"
               >
-                View Menu
+                Order
               </Link>
             </div>
           ))}
         </div>
       )}
 
-      {/* Add Address Modal */}
-      {isAddAddressOpen && (
+      {/* Add Room Modal */}
+      {isAddRoomOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 border border-noir-200 shadow-2xl space-y-4">
-            <h3 className="font-bold text-base text-black">Register New Residence</h3>
-            <form onSubmit={handleCreateAddress} className="space-y-3">
+            <h3 className="font-bold text-base text-black">Register Hostel Room</h3>
+            <form onSubmit={handleCreateRoom} className="space-y-3">
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Label</label>
-                <div className="flex gap-2 pt-1">
-                  {(['Home', 'Work', 'Other'] as const).map((l) => (
-                    <button
-                      key={l}
-                      type="button"
-                      onClick={() => setNewLabel(l)}
-                      className={`flex-1 py-1.5 rounded-lg border text-xs font-mono ${
-                        newLabel === l ? 'border-black bg-black text-white font-bold' : 'border-noir-200'
-                      }`}
-                    >
-                      {l}
-                    </button>
+                <label className="text-xs font-mono uppercase text-noir-500">Hostel</label>
+                <select
+                  value={newHostel}
+                  onChange={(e) => setNewHostel(e.target.value)}
+                  className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs bg-white"
+                >
+                  {HOSTEL_LIST.map((h) => (
+                    <option key={h} value={h}>
+                      {h}
+                    </option>
                   ))}
+                </select>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-mono uppercase text-noir-500">Block / Wing</label>
+                  <input
+                    type="text"
+                    required
+                    value={newBlock}
+                    onChange={(e) => setNewBlock(e.target.value)}
+                    placeholder="Block B"
+                    className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-mono uppercase text-noir-500">Floor</label>
+                  <input
+                    type="text"
+                    required
+                    value={newFloor}
+                    onChange={(e) => setNewFloor(e.target.value)}
+                    placeholder="3rd Floor"
+                    className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
+                  />
                 </div>
               </div>
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Street Address</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Room Number</label>
                 <input
                   type="text"
                   required
-                  value={newStreet}
-                  onChange={(e) => setNewStreet(e.target.value)}
-                  placeholder="e.g. 102 Horizon Penthouse"
+                  value={newRoom}
+                  onChange={(e) => setNewRoom(e.target.value)}
+                  placeholder="e.g. 304"
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Landmark</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Hostel Landmark</label>
                 <input
                   type="text"
                   value={newLandmark}
                   onChange={(e) => setNewLandmark(e.target.value)}
-                  placeholder="Opposite Seaside Park"
-                  className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Postal Code</label>
-                <input
-                  type="text"
-                  required
-                  value={newPostal}
-                  onChange={(e) => setNewPostal(e.target.value)}
-                  placeholder="400050"
+                  placeholder="Near staircase / lift"
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setIsAddAddressOpen(false)}
+                  onClick={() => setIsAddRoomOpen(false)}
                   className="flex-1 py-2.5 rounded-full border border-noir-300 text-xs font-semibold"
                 >
                   Cancel
@@ -365,7 +379,7 @@ export default function ProfilePage() {
                   type="submit"
                   className="flex-1 py-2.5 rounded-full bg-black text-white text-xs font-semibold hover:bg-noir-800"
                 >
-                  Save Residence
+                  Save Room
                 </button>
               </div>
             </form>

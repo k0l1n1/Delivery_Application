@@ -3,21 +3,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/lib/store/auth-context';
 import { useOrders } from '@/lib/store/order-store';
-import { MOCK_RESTAURANTS, MOCK_CATEGORIES, MOCK_COUPONS } from '@/lib/data/mock-data';
+import { MOCK_RESTAURANTS, MOCK_COUPONS } from '@/lib/data/mock-data';
 import { Coupon } from '@/types/database';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import {
   ShieldCheck,
-  Users,
-  Store,
+  Building2,
   Bike,
-  ShoppingBag,
-  DollarSign,
-  Tag,
-  Check,
-  X,
   Plus,
-  Sliders,
 } from 'lucide-react';
 
 export default function AdminDashboard() {
@@ -25,18 +18,15 @@ export default function AdminDashboard() {
   const { orders } = useOrders();
 
   const [coupons, setCoupons] = useState<Coupon[]>(MOCK_COUPONS);
-  const [activeTab, setActiveTab] = useState<'overview' | 'restaurants' | 'coupons' | 'orders'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'canteens' | 'coupons' | 'orders'>('overview');
 
-  // Coupon form
   const [isAddCouponOpen, setIsAddCouponOpen] = useState(false);
   const [newCode, setNewCode] = useState('');
   const [newDesc, setNewDesc] = useState('');
   const [newDiscount, setNewDiscount] = useState('');
-  const [discountType, setDiscountType] = useState<'percentage' | 'flat'>('percentage');
+  const [discountType, setDiscountType] = useState<'percentage' | 'flat'>('flat');
 
-  // Metrics
   const totalRevenue = orders.reduce((acc, o) => acc + o.total_amount, 0);
-  const platformCommission = Math.round(totalRevenue * 0.15); // 15% platform commission
 
   const handleCreateCoupon = (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,10 +36,10 @@ export default function AdminDashboard() {
     const created: Coupon = {
       id: `cp-${Date.now()}`,
       code: newCode.toUpperCase().trim(),
-      description: newDesc || 'Special platform privilege discount',
+      description: newDesc || 'Special hostel student discount',
       discount_type: discountType,
       discount_value: discountType === 'percentage' ? val : Math.round(val * 100),
-      min_order_amount: 30000,
+      min_order_amount: 10000,
       is_active: true,
     };
 
@@ -74,11 +64,11 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-6 h-6 text-black" />
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black">
-              NOIR Platform Governance
+              Hostel Dining & Canteen Administration
             </h1>
           </div>
           <p className="text-xs text-noir-500 font-mono">
-            Lead Administrator: {user?.full_name || 'Elena Rostova'} • Enterprise Central Console
+            Hostel Warden & Dining Incharge: {user?.full_name || 'Prof. S. K. Narayan'}
           </p>
         </div>
 
@@ -89,15 +79,15 @@ export default function AdminDashboard() {
               activeTab === 'overview' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Overview KPIs
+            Campus Overview
           </button>
           <button
-            onClick={() => setActiveTab('restaurants')}
+            onClick={() => setActiveTab('canteens')}
             className={`px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
-              activeTab === 'restaurants' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
+              activeTab === 'canteens' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Ateliers ({MOCK_RESTAURANTS.length})
+            Canteens ({MOCK_RESTAURANTS.length})
           </button>
           <button
             onClick={() => setActiveTab('coupons')}
@@ -105,7 +95,7 @@ export default function AdminDashboard() {
               activeTab === 'coupons' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Promotions ({coupons.length})
+            Student Coupons ({coupons.length})
           </button>
           <button
             onClick={() => setActiveTab('orders')}
@@ -113,37 +103,32 @@ export default function AdminDashboard() {
               activeTab === 'orders' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Audit Log ({orders.length})
+            Delivery Log ({orders.length})
           </button>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Gross Merchandise (GMV)</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Gross Canteen Volume</p>
           <p className="text-2xl font-bold font-mono text-black">{formatCurrency(totalRevenue)}</p>
-          <p className="text-[11px] text-emerald-600 font-mono">Platform volume</p>
+          <p className="text-[11px] text-emerald-600 font-mono">All campus hostels</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Net Platform Commission</p>
-          <p className="text-2xl font-bold font-mono text-black">{formatCurrency(platformCommission)}</p>
-          <p className="text-[11px] text-emerald-600 font-mono">15% Take rate</p>
-        </div>
-        <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Culinary Ateliers</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Campus Outlets</p>
           <p className="text-2xl font-bold font-mono text-black">{MOCK_RESTAURANTS.length}</p>
-          <p className="text-[11px] text-noir-500 font-mono">100% Verified</p>
+          <p className="text-[11px] text-noir-500 font-mono">SAC Canteens & Mess Plus</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Fleet Partners</p>
-          <p className="text-2xl font-bold font-mono text-black">18</p>
-          <p className="text-[11px] text-noir-500 font-mono">Electric Couriers</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Active Hostel Runners</p>
+          <p className="text-2xl font-bold font-mono text-black">12</p>
+          <p className="text-[11px] text-noir-500 font-mono">Covering all wings</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Total Transactions</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Total Room Deliveries</p>
           <p className="text-2xl font-bold font-mono text-black">{orders.length}</p>
-          <p className="text-[11px] text-emerald-600 font-mono">Zero Chargebacks</p>
+          <p className="text-[11px] text-emerald-600 font-mono">100% successful drop-offs</p>
         </div>
       </div>
 
@@ -151,13 +136,15 @@ export default function AdminDashboard() {
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-3xl border border-noir-200 shadow-subtle space-y-4">
-            <h3 className="font-bold text-sm text-black">Recent Platform Orders</h3>
+            <h3 className="font-bold text-sm text-black">Recent Hostel Orders</h3>
             <div className="divide-y divide-noir-100">
               {orders.slice(0, 5).map((o) => (
                 <div key={o.id} className="py-2.5 flex items-center justify-between text-xs">
                   <div>
                     <span className="font-mono font-bold text-black">#{o.order_number}</span>
-                    <p className="text-noir-500">{o.customer_name} • {o.restaurant_name}</p>
+                    <p className="text-noir-500">
+                      {o.customer_name} • {o.delivery_address.room_number}, {o.delivery_address.hostel_name}
+                    </p>
                   </div>
                   <div className="text-right">
                     <span className="font-mono font-bold text-black">{formatCurrency(o.total_amount)}</span>
@@ -169,31 +156,31 @@ export default function AdminDashboard() {
           </div>
 
           <div className="bg-white p-6 rounded-3xl border border-noir-200 shadow-subtle space-y-4">
-            <h3 className="font-bold text-sm text-black">Platform Health & Security</h3>
+            <h3 className="font-bold text-sm text-black">Hostel Hygiene & Policy Compliance</h3>
             <div className="space-y-3 text-xs">
               <div className="flex items-center justify-between p-3 rounded-xl bg-noir-50 border border-noir-200">
-                <span>Razorpay Webhook Verification</span>
-                <span className="font-mono text-emerald-700 font-bold">ACTIVE (200 OK)</span>
+                <span>Night Delivery Hours</span>
+                <span className="font-mono text-emerald-700 font-bold">ACTIVE (Till 4:00 AM)</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-noir-50 border border-noir-200">
-                <span>Supabase PostgreSQL Health</span>
-                <span className="font-mono text-emerald-700 font-bold">CONNECTED</span>
+                <span>Girls Hostel Security Protocol</span>
+                <span className="font-mono text-emerald-700 font-bold">VERIFIED (Designated Gate Handover)</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-noir-50 border border-noir-200">
-                <span>Row Level Security (RLS)</span>
-                <span className="font-mono text-emerald-700 font-bold">18 TABLES ENFORCED</span>
+                <span>Mess Food Quality Audit</span>
+                <span className="font-mono text-emerald-700 font-bold">PASS (A+ RATING)</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-noir-50 border border-noir-200">
-                <span>Thermal Packaging Compliance</span>
-                <span className="font-mono text-emerald-700 font-bold">100% AUDITED</span>
+                <span>Student UPI Security</span>
+                <span className="font-mono text-emerald-700 font-bold">256-BIT ENCRYPTED</span>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Tab: Restaurants */}
-      {activeTab === 'restaurants' && (
+      {/* Tab: Canteens */}
+      {activeTab === 'canteens' && (
         <div className="bg-white rounded-3xl border border-noir-200 overflow-hidden shadow-subtle divide-y divide-noir-100">
           {MOCK_RESTAURANTS.map((r) => (
             <div key={r.id} className="p-4 sm:p-5 flex items-center justify-between gap-4 text-xs">
@@ -210,7 +197,7 @@ export default function AdminDashboard() {
 
               <div className="flex items-center gap-2">
                 <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-300 font-mono text-[10px] uppercase font-bold">
-                  Approved Atelier
+                  Active Canteen
                 </span>
               </div>
             </div>
@@ -222,17 +209,17 @@ export default function AdminDashboard() {
       {activeTab === 'coupons' && (
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg font-bold text-black">Promotional Coupons & Privileges</h2>
+            <h2 className="text-lg font-bold text-black">Student Coupons</h2>
             <button
               onClick={() => setIsAddCouponOpen(true)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-black text-white hover:bg-noir-800 text-xs font-semibold transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Create Coupon</span>
+              <span>Issue Coupon</span>
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {coupons.map((c) => (
               <div
                 key={c.id}
@@ -258,7 +245,7 @@ export default function AdminDashboard() {
                 <div className="pt-2 border-t border-noir-100 flex items-center justify-between text-xs font-mono text-noir-500">
                   <span>
                     {c.discount_type === 'percentage'
-                      ? `${c.discount_value}% Discount`
+                      ? `${c.discount_value}% Off`
                       : `Flat ${formatCurrency(c.discount_value)}`}
                   </span>
                   <span>Min {formatCurrency(c.min_order_amount)}</span>
@@ -269,7 +256,7 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Tab: Audit Log */}
+      {/* Tab: Orders */}
       {activeTab === 'orders' && (
         <div className="bg-white rounded-3xl border border-noir-200 overflow-hidden shadow-subtle">
           <div className="overflow-x-auto">
@@ -277,21 +264,25 @@ export default function AdminDashboard() {
               <thead className="bg-noir-50 border-b border-noir-200 font-mono text-noir-500 uppercase text-[11px]">
                 <tr>
                   <th className="p-4">Order Ref</th>
-                  <th className="p-4">Customer</th>
-                  <th className="p-4">Restaurant</th>
-                  <th className="p-4">Method</th>
+                  <th className="p-4">Student</th>
+                  <th className="p-4">Hostel & Room</th>
+                  <th className="p-4">Canteen</th>
                   <th className="p-4">Amount</th>
                   <th className="p-4">Status</th>
-                  <th className="p-4">Timestamp</th>
+                  <th className="p-4">Time</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-noir-100">
                 {orders.map((o) => (
                   <tr key={o.id} className="hover:bg-noir-50/50">
                     <td className="p-4 font-mono font-bold text-black">{o.order_number}</td>
-                    <td className="p-4">{o.customer_name}</td>
+                    <td className="p-4">
+                      {o.customer_name} ({o.student_roll_no || 'Student'})
+                    </td>
+                    <td className="p-4 font-semibold text-black">
+                      {o.delivery_address.room_number || 'Room'}, {o.delivery_address.hostel_name}
+                    </td>
                     <td className="p-4">{o.restaurant_name}</td>
-                    <td className="p-4 font-mono uppercase">{o.payment_method}</td>
                     <td className="p-4 font-mono font-bold">{formatCurrency(o.total_amount)}</td>
                     <td className="p-4">
                       <span className="font-mono uppercase text-[10px] bg-noir-100 px-2 py-0.5 rounded border border-noir-300">
@@ -311,7 +302,7 @@ export default function AdminDashboard() {
       {isAddCouponOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 border border-noir-200 shadow-2xl space-y-4">
-            <h3 className="font-bold text-base text-black">Issue Promotional Coupon</h3>
+            <h3 className="font-bold text-base text-black">Issue Student Coupon</h3>
 
             <form onSubmit={handleCreateCoupon} className="space-y-3">
               <div>
@@ -321,49 +312,19 @@ export default function AdminDashboard() {
                   required
                   value={newCode}
                   onChange={(e) => setNewCode(e.target.value)}
-                  placeholder="e.g. VIP25"
+                  placeholder="e.g. MIDNIGHT30"
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs font-mono uppercase"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Discount Type</label>
-                <div className="flex gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => setDiscountType('percentage')}
-                    className={`flex-1 py-1.5 rounded-lg border text-xs font-mono ${
-                      discountType === 'percentage'
-                        ? 'border-black bg-black text-white font-bold'
-                        : 'border-noir-200'
-                    }`}
-                  >
-                    Percentage (%)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setDiscountType('flat')}
-                    className={`flex-1 py-1.5 rounded-lg border text-xs font-mono ${
-                      discountType === 'flat'
-                        ? 'border-black bg-black text-white font-bold'
-                        : 'border-noir-200'
-                    }`}
-                  >
-                    Flat Rupee (₹)
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="text-xs font-mono uppercase text-noir-500">
-                  {discountType === 'percentage' ? 'Percentage (e.g. 25 for 25%)' : 'Rupee Amount (e.g. 250)'}
-                </label>
+                <label className="text-xs font-mono uppercase text-noir-500">Discount Amount in Rupees (₹)</label>
                 <input
                   type="number"
                   required
                   value={newDiscount}
                   onChange={(e) => setNewDiscount(e.target.value)}
-                  placeholder={discountType === 'percentage' ? '25' : '250'}
+                  placeholder="30"
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>
@@ -374,7 +335,7 @@ export default function AdminDashboard() {
                   type="text"
                   value={newDesc}
                   onChange={(e) => setNewDesc(e.target.value)}
-                  placeholder="e.g. 25% off for priority members"
+                  placeholder="Flat ₹30 off on midnight orders"
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>

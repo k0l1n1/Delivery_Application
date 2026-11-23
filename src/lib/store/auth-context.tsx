@@ -21,17 +21,18 @@ interface AuthContextType {
 const DEFAULT_USERS: Record<UserRole, Profile> = {
   customer: {
     id: 'user-customer-1',
-    email: 'alexander@noir.luxury',
-    full_name: 'Alexander Vance',
-    phone: '+91 98200 12345',
+    email: 'aman.verma@campus.edu',
+    full_name: 'Aman Verma',
+    roll_number: '2023CSB1042',
+    phone: '+91 98200 54321',
     role: 'customer',
     avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
     created_at: new Date().toISOString(),
   },
   restaurant_owner: {
     id: 'user-owner-1',
-    email: 'chef.antoine@latelier.com',
-    full_name: 'Chef Antoine Laurent',
+    email: 'kitchen.manager@campus.edu',
+    full_name: 'Mr. Ramesh Chand (Canteen Manager)',
     phone: '+91 98200 88990',
     role: 'restaurant_owner',
     avatar_url: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=200&q=80',
@@ -39,17 +40,17 @@ const DEFAULT_USERS: Record<UserRole, Profile> = {
   },
   delivery_partner: {
     id: 'user-delivery-1',
-    email: 'rohan.delivery@noir.luxury',
-    full_name: 'Rohan Sharma',
-    phone: '+91 98765 43210',
+    email: 'vikas.runner@campus.edu',
+    full_name: 'Vikas Kumar (Hostel Runner)',
+    phone: '+91 98765 11223',
     role: 'delivery_partner',
     avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
     created_at: new Date().toISOString(),
   },
   admin: {
     id: 'user-admin-1',
-    email: 'governance@noir.luxury',
-    full_name: 'Elena Rostova (Lead Admin)',
+    email: 'warden.dining@campus.edu',
+    full_name: 'Prof. S. K. Narayan (Hostel Warden / Admin)',
     phone: '+91 99999 00000',
     role: 'admin',
     avatar_url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80',
@@ -66,7 +67,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    // Load persisted auth from localStorage if available
     try {
       const savedRole = localStorage.getItem('noir_user_role') as UserRole;
       const savedUser = localStorage.getItem('noir_user_profile');
@@ -91,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, targetRole: UserRole = 'customer') => {
     setIsLoading(true);
-    await new Promise((res) => setTimeout(res, 400));
+    await new Promise((res) => setTimeout(res, 300));
     const baseUser = DEFAULT_USERS[targetRole];
     const loggedInUser: Profile = {
       ...baseUser,
@@ -106,7 +106,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signup = async (email: string, name: string, targetRole: UserRole = 'customer') => {
     setIsLoading(true);
-    await new Promise((res) => setTimeout(res, 400));
+    await new Promise((res) => setTimeout(res, 300));
     const newUser: Profile = {
       id: `user-${Date.now()}`,
       email,
@@ -136,8 +136,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const addAddress = (addrData: Omit<Address, 'id' | 'user_id'>) => {
+    const formattedStreet =
+      addrData.street_address ||
+      `${addrData.room_number}, ${addrData.block_wing}, ${addrData.floor ? addrData.floor + ', ' : ''}${addrData.hostel_name}`;
+
     const newAddr: Address = {
       ...addrData,
+      street_address: formattedStreet,
       id: `addr-${Date.now()}`,
       user_id: user?.id || 'guest',
       is_default: addresses.length === 0 || addrData.is_default,

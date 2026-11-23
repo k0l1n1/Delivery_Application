@@ -10,18 +10,17 @@ import { OrderStatus } from '@/types/database';
 import {
   CheckCircle2,
   Clock,
-  MapPin,
+  Building2,
   Phone,
   Bike,
   ShieldCheck,
-  ChevronRight,
   Package,
   Store,
   ChefHat,
-  Truck,
   PartyPopper,
   Play,
   RotateCcw,
+  GraduationCap,
 } from 'lucide-react';
 
 export default function OrderTrackingPage() {
@@ -31,7 +30,6 @@ export default function OrderTrackingPage() {
 
   const [order, setOrder] = useState(() => getOrderById(orderId));
 
-  // Sync order state
   useEffect(() => {
     const found = getOrderById(orderId);
     if (found) {
@@ -42,32 +40,31 @@ export default function OrderTrackingPage() {
   if (!order) {
     return (
       <div className="max-w-xl mx-auto py-24 px-4 text-center space-y-4">
-        <h2 className="text-xl font-bold">Order Reference Not Found</h2>
+        <h2 className="text-xl font-bold">Hostel Order Not Found</h2>
         <p className="text-xs text-noir-500">
-          The order ID &ldquo;{orderId}&rdquo; could not be retrieved from active records.
+          The order ID &ldquo;{orderId}&rdquo; was not found in campus records.
         </p>
         <Link
           href="/restaurants"
           className="inline-block px-6 py-2.5 rounded-full bg-black text-white text-xs font-semibold"
         >
-          Return to Gourmet Collection
+          Return to Canteen Menu
         </Link>
       </div>
     );
   }
 
   const stages: { key: OrderStatus; label: string; icon: React.ReactNode; desc: string }[] = [
-    { key: 'placed', label: 'Order Placed', icon: <Package className="w-4 h-4" />, desc: 'Receipt verified' },
-    { key: 'confirmed', label: 'Atelier Confirmed', icon: <Store className="w-4 h-4" />, desc: 'Kitchen acknowledged' },
-    { key: 'preparing', label: 'Food Preparation', icon: <ChefHat className="w-4 h-4" />, desc: 'Culinary craftsmanship' },
-    { key: 'ready', label: 'Ready for Vault Pickup', icon: <ShieldCheck className="w-4 h-4" />, desc: 'Sealed in thermal vault' },
-    { key: 'out_for_delivery', label: 'Out for Delivery', icon: <Bike className="w-4 h-4" />, desc: 'Courier en route in EV' },
-    { key: 'delivered', label: 'Delivered', icon: <PartyPopper className="w-4 h-4" />, desc: 'Handed over at residence' },
+    { key: 'placed', label: 'Order Sent to Canteen', icon: <Package className="w-4 h-4" />, desc: 'Ticket received by kitchen' },
+    { key: 'confirmed', label: 'Kitchen Confirmed', icon: <Store className="w-4 h-4" />, desc: 'Cooking station preparing' },
+    { key: 'preparing', label: 'Cooking & Thermal Packing', icon: <ChefHat className="w-4 h-4" />, desc: 'Sealed in insulated box' },
+    { key: 'ready', label: 'Assigned to Hostel Runner', icon: <ShieldCheck className="w-4 h-4" />, desc: 'Handed over to runner' },
+    { key: 'out_for_delivery', label: 'Runner at Hostel Gate / Floor', icon: <Bike className="w-4 h-4" />, desc: 'Climbing to your room floor' },
+    { key: 'delivered', label: 'Delivered to Room Door', icon: <PartyPopper className="w-4 h-4" />, desc: 'Handed over at room door' },
   ];
 
   const currentStageIndex = stages.findIndex((s) => s.key === order.status);
 
-  // Advance stage helper for testing and demonstration
   const handleAdvanceStage = () => {
     if (currentStageIndex < stages.length - 1) {
       const nextStage = stages[currentStageIndex + 1].key;
@@ -88,7 +85,7 @@ export default function OrderTrackingPage() {
         <div>
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs uppercase tracking-widest text-noir-500">
-              Live Order Transit
+              Hostel Live Room Delivery
             </span>
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           </div>
@@ -103,7 +100,7 @@ export default function OrderTrackingPage() {
         {/* Live Simulation Test Bar */}
         <div className="flex items-center gap-2 bg-noir-100 p-2 rounded-2xl border border-noir-300">
           <span className="text-[11px] font-mono uppercase text-noir-600 px-2 font-medium">
-            Status Simulator:
+            Test Runner Simulation:
           </span>
           <button
             onClick={handleAdvanceStage}
@@ -111,7 +108,7 @@ export default function OrderTrackingPage() {
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black text-white hover:bg-noir-800 disabled:bg-noir-300 text-xs font-semibold transition-colors"
           >
             <Play className="w-3 h-3 fill-white" />
-            <span>Advance Next Status</span>
+            <span>Advance Stage</span>
           </button>
           <button
             onClick={handleResetStage}
@@ -124,22 +121,22 @@ export default function OrderTrackingPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Column: Real-time Stages & Interactive Map */}
+        {/* Left Column: Real-time Stages & Campus Map */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Status Tracker Bar */}
+          {/* Status Tracker */}
           <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-mono uppercase text-noir-400">Current Phase</p>
+                <p className="text-xs font-mono uppercase text-noir-400">Order Stage</p>
                 <h3 className="text-lg font-bold text-black capitalize">
                   {stages[currentStageIndex]?.label || order.status}
                 </h3>
               </div>
 
               <div className="text-right">
-                <p className="text-xs font-mono uppercase text-noir-400">Estimated Arrival</p>
+                <p className="text-xs font-mono uppercase text-noir-400">Estimated Drop-Off</p>
                 <p className="text-lg font-bold font-mono text-black">
-                  {order.status === 'delivered' ? 'Delivered' : '18-24 mins'}
+                  {order.status === 'delivered' ? 'Delivered' : '8-14 mins'}
                 </p>
               </div>
             </div>
@@ -152,7 +149,6 @@ export default function OrderTrackingPage() {
 
                 return (
                   <div key={stage.key} className="relative flex items-start gap-4">
-                    {/* Bullet */}
                     <div
                       className={`absolute -left-6 mt-0.5 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${
                         isCurrent
@@ -176,7 +172,7 @@ export default function OrderTrackingPage() {
                         </span>
                         {isCurrent && (
                           <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-noir-100 text-black border border-noir-300">
-                            In Progress
+                            Live
                           </span>
                         )}
                       </div>
@@ -188,21 +184,19 @@ export default function OrderTrackingPage() {
             </div>
           </div>
 
-          {/* Interactive Live Route Map (Vector/Canvas Simulation) */}
+          {/* Interactive Campus Route Map */}
           <div className="bg-white rounded-3xl border border-noir-200 overflow-hidden shadow-subtle">
             <div className="p-4 border-b border-noir-200 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Bike className="w-4 h-4 text-black" />
                 <h4 className="font-bold text-xs uppercase tracking-wider text-black">
-                  Live Dispatch Route & Courier Transit
+                  Campus Runner Telemetry & Hostel Transit
                 </h4>
               </div>
-              <span className="text-[11px] font-mono text-noir-500">GPS Live Telemetry</span>
+              <span className="text-[11px] font-mono text-noir-500">Live Campus Path</span>
             </div>
 
-            {/* Simulated Live Route Canvas */}
             <div className="relative h-64 sm:h-72 w-full bg-noir-100 flex items-center justify-center overflow-hidden">
-              {/* Minimalist grid styling */}
               <div
                 className="absolute inset-0 opacity-20"
                 style={{
@@ -212,9 +206,7 @@ export default function OrderTrackingPage() {
                 }}
               />
 
-              {/* Map SVG Route */}
               <svg className="absolute inset-0 w-full h-full" viewBox="0 0 600 300">
-                {/* Curved route polyline */}
                 <path
                   d="M 120 180 Q 250 80, 480 140"
                   fill="none"
@@ -223,33 +215,33 @@ export default function OrderTrackingPage() {
                   strokeDasharray="6 4"
                 />
 
-                {/* Restaurant Pin */}
+                {/* Canteen Node */}
                 <g transform="translate(120, 180)">
                   <circle r="14" fill="#000000" />
                   <circle r="6" fill="#FFFFFF" />
                   <text y="-20" textAnchor="middle" fill="#000000" fontSize="10" fontFamily="monospace" fontWeight="bold">
-                    {order.restaurant_name}
+                    SAC Canteen Kitchen
                   </text>
                 </g>
 
-                {/* Destination Pin */}
+                {/* Hostel Room Node */}
                 <g transform="translate(480, 140)">
                   <circle r="14" fill="#000000" />
                   <circle r="6" fill="#FFFFFF" />
                   <text y="-20" textAnchor="middle" fill="#000000" fontSize="10" fontFamily="monospace" fontWeight="bold">
-                    Delivery Residence
+                    {order.delivery_address.room_number || 'Hostel Room'} ({order.delivery_address.hostel_name.split(' ')[0]})
                   </text>
                 </g>
 
-                {/* Moving Courier Pin based on stage */}
+                {/* Runner marker */}
                 <g
                   transform={`translate(${
                     currentStageIndex <= 2
                       ? 140
                       : currentStageIndex === 3
-                      ? 220
+                      ? 230
                       : currentStageIndex === 4
-                      ? 360
+                      ? 370
                       : 480
                   }, ${
                     currentStageIndex <= 2
@@ -266,56 +258,56 @@ export default function OrderTrackingPage() {
                   <circle r="12" fill="#000000" />
                   <circle r="4" fill="#FFFFFF" />
                   <text y="24" textAnchor="middle" fill="#000000" fontSize="9" fontFamily="monospace">
-                    Courier (EV-8840)
+                    Campus Cycle #14
                   </text>
                 </g>
               </svg>
 
               <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-noir-200 text-[10px] font-mono text-black">
-                Pali Hill • Transit Zone Bandra
+                {order.delivery_address.hostel_name} • {order.delivery_address.block_wing}
               </div>
             </div>
 
-            {/* Courier Profile Card */}
+            {/* Runner Profile */}
             <div className="p-4 bg-noir-50 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative w-10 h-10 rounded-full overflow-hidden bg-noir-200 border border-noir-300">
                   <Image
                     src={
                       order.delivery_partner?.avatar_url ||
-                      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+                      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
                     }
-                    alt="Courier"
+                    alt="Hostel Runner"
                     fill
                     className="object-cover"
                   />
                 </div>
                 <div>
                   <h4 className="font-bold text-xs text-black">
-                    {order.delivery_partner?.name || 'Rohan Sharma'}
+                    {order.delivery_partner?.name || 'Vikas Kumar (Hostel Runner)'}
                   </h4>
                   <p className="text-[11px] text-noir-500 font-mono">
-                    {order.delivery_partner?.vehicle_number || 'MH-02-EX-8840'} (EV) • 4.95★
+                    {order.delivery_partner?.vehicle_number || 'Campus Cycle #14'} • 4.95★
                   </p>
                 </div>
               </div>
 
               <a
-                href="tel:+919876543210"
+                href="tel:+919876511223"
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-noir-300 text-xs font-semibold text-black hover:bg-noir-100 transition-colors"
               >
                 <Phone className="w-3.5 h-3.5" />
-                <span>Call Courier</span>
+                <span>Call Runner</span>
               </a>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Ordered Items & Residence Details */}
+        {/* Right Column: Ordered Food & Hostel Room Details */}
         <div className="lg:col-span-5 space-y-6">
           {/* Order Details */}
           <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-4">
-            <h3 className="font-bold text-sm text-black">Gourmet Selection</h3>
+            <h3 className="font-bold text-sm text-black">Food Selection</h3>
 
             <div className="divide-y divide-noir-100">
               {order.items.map((item) => (
@@ -337,11 +329,11 @@ export default function OrderTrackingPage() {
 
             <div className="pt-3 border-t border-noir-200 space-y-1.5 text-xs">
               <div className="flex items-center justify-between text-noir-600">
-                <span>Subtotal</span>
+                <span>Food Total</span>
                 <span className="font-mono text-black">{formatCurrency(order.subtotal_amount)}</span>
               </div>
               <div className="flex items-center justify-between text-noir-600">
-                <span>Thermal Delivery</span>
+                <span>Hostel Runner Fee</span>
                 <span className="font-mono text-black">
                   {order.delivery_fee === 0 ? 'FREE' : formatCurrency(order.delivery_fee)}
                 </span>
@@ -352,12 +344,12 @@ export default function OrderTrackingPage() {
               </div>
               {order.discount_amount > 0 && (
                 <div className="flex items-center justify-between text-emerald-600">
-                  <span>Privilege Discount</span>
+                  <span>Student Coupon</span>
                   <span className="font-mono">-{formatCurrency(order.discount_amount)}</span>
                 </div>
               )}
               <div className="pt-2 border-t border-noir-200 flex items-center justify-between text-sm font-bold text-black">
-                <span>Amount Paid</span>
+                <span>Grand Total</span>
                 <span className="font-mono">{formatCurrency(order.total_amount)}</span>
               </div>
             </div>
@@ -370,25 +362,25 @@ export default function OrderTrackingPage() {
             </div>
           </div>
 
-          {/* Delivery Residence Card */}
+          {/* Destination Hostel Room */}
           <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-3">
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-black" />
-              <h3 className="font-bold text-sm text-black">Destination Residence</h3>
+              <Building2 className="w-4 h-4 text-black" />
+              <h3 className="font-bold text-sm text-black">Delivery Hostel & Room</h3>
             </div>
             <div className="text-xs space-y-1">
-              <p className="font-semibold text-black">{order.delivery_address.label} Residence</p>
-              <p className="text-noir-600">{order.delivery_address.street_address}</p>
-              {order.delivery_address.landmark && (
-                <p className="text-noir-500">{order.delivery_address.landmark}</p>
-              )}
-              <p className="text-noir-500 font-mono">
-                {order.delivery_address.city} • {order.delivery_address.postal_code}
+              <p className="font-bold text-black text-sm">
+                {order.delivery_address.room_number || 'Room'} • {order.delivery_address.floor || 'Floor'}
               </p>
+              <p className="text-noir-800 font-semibold">{order.delivery_address.hostel_name}</p>
+              <p className="text-noir-600">{order.delivery_address.block_wing}</p>
+              {order.student_roll_no && (
+                <p className="text-noir-500 font-mono">Roll No: {order.student_roll_no}</p>
+              )}
             </div>
             {order.special_instructions && (
               <div className="pt-2 border-t border-noir-100 text-xs">
-                <span className="font-mono uppercase text-[10px] text-noir-400">Cooking & Gate Note:</span>
+                <span className="font-mono uppercase text-[10px] text-noir-400">Student Gate / Room Note:</span>
                 <p className="text-noir-700 italic mt-0.5">&ldquo;{order.special_instructions}&rdquo;</p>
               </div>
             )}

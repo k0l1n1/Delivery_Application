@@ -7,8 +7,9 @@ import { useAuth } from '@/lib/store/auth-context';
 import { useOrders } from '@/lib/store/order-store';
 import { formatCurrency, generateOrderNumber } from '@/lib/utils';
 import { PaymentMethod, Address } from '@/types/database';
+import { HOSTEL_LIST } from '@/lib/data/mock-data';
 import {
-  MapPin,
+  Building2,
   CreditCard,
   Banknote,
   ShieldCheck,
@@ -17,6 +18,7 @@ import {
   ArrowRight,
   Loader2,
   Lock,
+  GraduationCap,
 } from 'lucide-react';
 
 declare global {
@@ -45,15 +47,17 @@ export default function CheckoutPage() {
     addresses[0]?.id || ''
   );
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('razorpay');
-  const [cookingInstructions, setCookingInstructions] = useState('');
+  const [hostelInstructions, setHostelInstructions] = useState('');
+  const [studentRoll, setStudentRoll] = useState(user?.roll_number || '2023CSB1042');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
 
-  // New address form state
-  const [newStreet, setNewStreet] = useState('');
+  // New hostel address form
+  const [newHostelName, setNewHostelName] = useState(HOSTEL_LIST[0]);
+  const [newBlock, setNewBlock] = useState('Block B');
+  const [newFloor, setNewFloor] = useState('2nd Floor');
+  const [newRoom, setNewRoom] = useState('');
   const [newLandmark, setNewLandmark] = useState('');
-  const [newPostal, setNewPostal] = useState('');
-  const [newLabel, setNewLabel] = useState<'Home' | 'Work' | 'Other'>('Home');
 
   if (items.length === 0) {
     return (
@@ -63,7 +67,7 @@ export default function CheckoutPage() {
           onClick={() => router.push('/restaurants')}
           className="px-6 py-2.5 rounded-full bg-black text-white text-xs font-semibold"
         >
-          Browse Restaurants
+          Browse Campus Canteens
         </button>
       </div>
     );
@@ -71,28 +75,28 @@ export default function CheckoutPage() {
 
   const selectedAddress = addresses.find((a) => a.id === selectedAddressId) || addresses[0];
 
-  const handleAddNewAddress = (e: React.FormEvent) => {
+  const handleAddNewHostelAddress = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newStreet.trim() || !newPostal.trim()) return;
+    if (!newRoom.trim()) return;
 
     addAddress({
-      label: newLabel,
-      street_address: newStreet,
+      label: 'Hostel Room',
+      hostel_name: newHostelName,
+      block_wing: newBlock,
+      room_number: newRoom.startsWith('Room') ? newRoom : `Room ${newRoom}`,
+      floor: newFloor,
       landmark: newLandmark,
-      city: 'Mumbai',
-      postal_code: newPostal,
       is_default: true,
     });
 
     setIsAddAddressModalOpen(false);
-    setNewStreet('');
+    setNewRoom('');
     setNewLandmark('');
-    setNewPostal('');
   };
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress) {
-      alert('Please select or add a delivery address to proceed.');
+      alert('Please select or register your hostel room.');
       return;
     }
 
@@ -100,15 +104,15 @@ export default function CheckoutPage() {
 
     try {
       if (paymentMethod === 'cod') {
-        // Cash on delivery
-        const orderNumber = generateOrderNumber();
+        const orderNumber = `HOSTEL-${Math.floor(1000 + Math.random() * 9000)}`;
         const order = createOrder({
           order_number: orderNumber,
-          user_id: user?.id || 'guest',
-          customer_name: user?.full_name || 'Guest Connoisseur',
-          customer_phone: user?.phone || '+91 98200 12345',
-          restaurant_id: restaurantId || 'rest-1',
-          restaurant_name: restaurantName || "L'Atelier Noir",
+          user_id: user?.id || 'guest-student',
+          customer_name: user?.full_name || 'Aman Verma',
+          customer_phone: user?.phone || '+91 98200 54321',
+          student_roll_no: studentRoll,
+          restaurant_id: restaurantId || 'hub-1',
+          restaurant_name: restaurantName || 'The Midnight Canteen (24/7)',
           delivery_address: selectedAddress,
           status: 'placed',
           subtotal_amount: subtotal,
@@ -118,7 +122,7 @@ export default function CheckoutPage() {
           total_amount: totalAmount,
           payment_method: 'cod',
           payment_status: 'pending',
-          special_instructions: cookingInstructions,
+          special_instructions: hostelInstructions,
           items: items.map((item, idx) => ({
             id: `oi-${Date.now()}-${idx}`,
             order_id: '',
@@ -152,7 +156,6 @@ export default function CheckoutPage() {
         throw new Error(orderData.error || 'Failed to initiate payment gateway');
       }
 
-      // Check if Razorpay script is loaded and real key is present
       const razorpayKey = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
       const hasRealKey =
         razorpayKey && !razorpayKey.includes('sample') && typeof window.Razorpay !== 'undefined';
@@ -162,8 +165,8 @@ export default function CheckoutPage() {
           key: razorpayKey,
           amount: orderData.amount,
           currency: orderData.currency,
-          name: 'NOIR Gastronomy',
-          description: `Gourmet Order from ${restaurantName}`,
+          name: 'NOIR Hostel Food Delivery',
+          description: `Hostel Order from ${restaurantName}`,
           order_id: orderData.id,
           handler: async (response: any) => {
             const verifyRes = await fetch('/api/payments/razorpay/verify', {
@@ -180,14 +183,14 @@ export default function CheckoutPage() {
             if (verifyData.success) {
               completeAndRedirectOrder('razorpay', 'completed');
             } else {
-              alert('Payment signature verification failed. Please contact concierge.');
+              alert('Payment verification failed. Please contact hostel canteen manager.');
               setIsProcessing(false);
             }
           },
           prefill: {
-            name: user?.full_name || 'Alexander Vance',
-            email: user?.email || 'alexander@noir.luxury',
-            contact: user?.phone || '9820012345',
+            name: user?.full_name || 'Aman Verma',
+            email: user?.email || 'student@campus.edu',
+            contact: user?.phone || '9820054321',
           },
           theme: { color: '#000000' },
         };
@@ -199,7 +202,7 @@ export default function CheckoutPage() {
           setIsProcessing(false);
         });
       } else {
-        // High fidelity test simulator verification
+        // High fidelity test mode
         const simPaymentId = `pay_sim_${Date.now()}`;
         const verifyRes = await fetch('/api/payments/razorpay/verify', {
           method: 'POST',
@@ -223,14 +226,15 @@ export default function CheckoutPage() {
   };
 
   const completeAndRedirectOrder = (method: PaymentMethod, payStatus: 'completed' | 'pending') => {
-    const orderNumber = generateOrderNumber();
+    const orderNumber = `HOSTEL-${Math.floor(1000 + Math.random() * 9000)}`;
     const order = createOrder({
       order_number: orderNumber,
-      user_id: user?.id || 'guest',
-      customer_name: user?.full_name || 'Alexander Vance',
-      customer_phone: user?.phone || '+91 98200 12345',
-      restaurant_id: restaurantId || 'rest-1',
-      restaurant_name: restaurantName || "L'Atelier Noir",
+      user_id: user?.id || 'guest-student',
+      customer_name: user?.full_name || 'Aman Verma',
+      customer_phone: user?.phone || '+91 98200 54321',
+      student_roll_no: studentRoll,
+      restaurant_id: restaurantId || 'hub-1',
+      restaurant_name: restaurantName || 'The Midnight Canteen (24/7)',
       delivery_address: selectedAddress,
       status: 'placed',
       subtotal_amount: subtotal,
@@ -240,7 +244,7 @@ export default function CheckoutPage() {
       total_amount: totalAmount,
       payment_method: method,
       payment_status: payStatus,
-      special_instructions: cookingInstructions,
+      special_instructions: hostelInstructions,
       items: items.map((item, idx) => ({
         id: `oi-${Date.now()}-${idx}`,
         order_id: '',
@@ -260,21 +264,21 @@ export default function CheckoutPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div>
-        <span className="text-xs font-mono uppercase tracking-widest text-noir-500">Checkout</span>
-        <h1 className="text-3xl font-extrabold tracking-tight text-black mt-1">Review & Confirm Order</h1>
+        <span className="text-xs font-mono uppercase tracking-widest text-noir-500">Hostel Order Checkout</span>
+        <h1 className="text-3xl font-extrabold tracking-tight text-black mt-1">Confirm Room Delivery</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left Form: Address & Payment */}
+        {/* Left Form: Hostel Room & Payment */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Step 1: Address Selection */}
+          {/* Step 1: Hostel Room Selection */}
           <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-xs font-mono">
                   1
                 </div>
-                <h3 className="font-bold text-sm text-black">Delivery Residence</h3>
+                <h3 className="font-bold text-sm text-black">Delivery Hostel & Room</h3>
               </div>
               <button
                 type="button"
@@ -282,7 +286,7 @@ export default function CheckoutPage() {
                 className="flex items-center gap-1 text-xs font-semibold text-black hover:text-noir-600 font-mono transition-colors"
               >
                 <Plus className="w-3.5 h-3.5" />
-                <span>Add Address</span>
+                <span>Add Room #</span>
               </button>
             </div>
 
@@ -293,43 +297,65 @@ export default function CheckoutPage() {
                   <div
                     key={addr.id}
                     onClick={() => setSelectedAddressId(addr.id)}
-                    className={`p-4 rounded-2xl border text-xs cursor-pointer transition-colors space-y-1 ${
+                    className={`p-4 rounded-2xl border text-xs cursor-pointer transition-colors space-y-1.5 ${
                       isSelected
                         ? 'border-black bg-noir-50 text-black shadow-sm'
                         : 'border-noir-200 hover:border-noir-300 text-noir-700'
                     }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-bold uppercase tracking-wider font-mono text-[11px] text-black">
-                        {addr.label}
+                      <span className="font-bold font-mono text-xs text-black">
+                        {addr.room_number || addr.label}
                       </span>
                       {isSelected && <Check className="w-4 h-4 text-black" />}
                     </div>
-                    <p className="line-clamp-2">{addr.street_address}</p>
+                    <p className="font-semibold text-noir-900">{addr.hostel_name}</p>
                     <p className="text-[11px] text-noir-500 font-mono">
-                      {addr.city} • {addr.postal_code}
+                      {addr.block_wing} • {addr.floor}
                     </p>
+                    {addr.landmark && (
+                      <p className="text-[10px] text-noir-400 italic">Near: {addr.landmark}</p>
+                    )}
                   </div>
                 );
               })}
             </div>
           </div>
 
-          {/* Step 2: Instructions */}
-          <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-3">
+          {/* Step 2: Student Roll No & Instructions */}
+          <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-4">
             <div className="flex items-center gap-2">
               <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-xs font-mono">
                 2
               </div>
-              <h3 className="font-bold text-sm text-black">Chef & Courier Instructions</h3>
+              <h3 className="font-bold text-sm text-black">Student Details & Gate Note</h3>
             </div>
-            <textarea
-              value={cookingInstructions}
-              onChange={(e) => setCookingInstructions(e.target.value)}
-              placeholder="e.g. Please arrange extra napkins, cutlery, or instructions for entering through the residential concierge gate..."
-              rows={2}
-              className="w-full p-3 rounded-2xl border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-xs text-black"
-            />
+
+            <div className="space-y-3">
+              <div>
+                <label className="text-xs font-mono uppercase text-noir-500">Student Roll / ID Number</label>
+                <input
+                  type="text"
+                  value={studentRoll}
+                  onChange={(e) => setStudentRoll(e.target.value)}
+                  placeholder="e.g. 2023CSB1042"
+                  className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs font-mono uppercase"
+                />
+              </div>
+
+              <div>
+                <label className="text-xs font-mono uppercase text-noir-500">
+                  Runner Instructions (Gate Entry / Soft Knock)
+                </label>
+                <textarea
+                  value={hostelInstructions}
+                  onChange={(e) => setHostelInstructions(e.target.value)}
+                  placeholder="e.g. If main hostel gate is locked after 11 PM, please call me on my mobile; please knock softly on room door..."
+                  rows={2}
+                  className="w-full mt-1 p-3 rounded-2xl border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-xs text-black"
+                />
+              </div>
+            </div>
           </div>
 
           {/* Step 3: Payment Method */}
@@ -338,11 +364,11 @@ export default function CheckoutPage() {
               <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-xs font-mono">
                 3
               </div>
-              <h3 className="font-bold text-sm text-black">Select Payment Option</h3>
+              <h3 className="font-bold text-sm text-black">Payment Preference</h3>
             </div>
 
             <div className="space-y-3">
-              {/* Razorpay */}
+              {/* Razorpay UPI */}
               <div
                 onClick={() => setPaymentMethod('razorpay')}
                 className={`p-4 rounded-2xl border cursor-pointer transition-colors flex items-center justify-between ${
@@ -357,10 +383,10 @@ export default function CheckoutPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-xs text-black">
-                      Razorpay Gateway (UPI, Cards, NetBanking)
+                      Razorpay Instant UPI & Cards (GPay, PhonePe, Paytm)
                     </h4>
                     <p className="text-[11px] text-noir-500">
-                      256-bit encrypted checkout with instant refund protection.
+                      Scan QR or pay via any UPI app directly from your phone.
                     </p>
                   </div>
                 </div>
@@ -387,9 +413,9 @@ export default function CheckoutPage() {
                     <Banknote className="w-4 h-4" />
                   </div>
                   <div>
-                    <h4 className="font-bold text-xs text-black">Cash on Delivery (COD)</h4>
+                    <h4 className="font-bold text-xs text-black">Pay Runner at Hostel Door (Cash / UPI)</h4>
                     <p className="text-[11px] text-noir-500">
-                      Pay via cash or UPI upon handover by the courier.
+                      Hand cash or scan the runner&apos;s personal UPI QR upon room drop-off.
                     </p>
                   </div>
                 </div>
@@ -405,10 +431,10 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Right: Order Summary Confirmation */}
+        {/* Right: Order Summary Breakdown */}
         <div className="lg:col-span-5 space-y-6">
           <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-4">
-            <h3 className="font-bold text-sm text-black">Review Order Breakdown</h3>
+            <h3 className="font-bold text-sm text-black">Hostel Meal Summary</h3>
 
             <div className="divide-y divide-noir-100 max-h-56 overflow-y-auto pr-1">
               {items.map((item) => (
@@ -430,27 +456,27 @@ export default function CheckoutPage() {
 
             <div className="pt-4 border-t border-noir-200 space-y-2 text-xs">
               <div className="flex items-center justify-between text-noir-600">
-                <span>Subtotal</span>
+                <span>Food Subtotal</span>
                 <span className="font-mono text-black">{formatCurrency(subtotal)}</span>
               </div>
               <div className="flex items-center justify-between text-noir-600">
-                <span>Delivery Charge</span>
+                <span>Hostel Floor Runner Tip</span>
                 <span className="font-mono text-black">
                   {deliveryFee === 0 ? 'FREE' : formatCurrency(deliveryFee)}
                 </span>
               </div>
               <div className="flex items-center justify-between text-noir-600">
-                <span>GST (5%)</span>
+                <span>Canteen GST (5%)</span>
                 <span className="font-mono text-black">{formatCurrency(taxAmount)}</span>
               </div>
               {discountAmount > 0 && (
                 <div className="flex items-center justify-between text-emerald-600 font-medium">
-                  <span>Privilege Code Discount</span>
+                  <span>Student Coupon Discount</span>
                   <span className="font-mono">-{formatCurrency(discountAmount)}</span>
                 </div>
               )}
               <div className="pt-2 border-t border-noir-200 flex items-center justify-between text-base font-bold text-black">
-                <span>Total to Pay</span>
+                <span>Total Amount</span>
                 <span className="font-mono">{formatCurrency(totalAmount)}</span>
               </div>
             </div>
@@ -463,12 +489,12 @@ export default function CheckoutPage() {
               {isProcessing ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Authorizing Secure Transaction...</span>
+                  <span>Placing Order with Canteen Kitchen...</span>
                 </>
               ) : (
                 <>
                   <Lock className="w-3.5 h-3.5" />
-                  <span>Authorize & Place Order • {formatCurrency(totalAmount)}</span>
+                  <span>Send Order to Room • {formatCurrency(totalAmount)}</span>
                 </>
               )}
             </button>
@@ -476,65 +502,73 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* Add Address Modal */}
+      {/* Add New Hostel Room Modal */}
       {isAddAddressModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 border border-noir-200 shadow-2xl space-y-4">
-            <h3 className="font-bold text-base text-black">Add New Delivery Residence</h3>
+            <h3 className="font-bold text-base text-black">Register Your Hostel Room</h3>
 
-            <form onSubmit={handleAddNewAddress} className="space-y-3">
+            <form onSubmit={handleAddNewHostelAddress} className="space-y-3">
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Label</label>
-                <div className="flex gap-2 pt-1">
-                  {(['Home', 'Work', 'Other'] as const).map((l) => (
-                    <button
-                      key={l}
-                      type="button"
-                      onClick={() => setNewLabel(l)}
-                      className={`flex-1 py-1.5 rounded-lg border text-xs font-mono ${
-                        newLabel === l
-                          ? 'border-black bg-black text-white font-bold'
-                          : 'border-noir-200 text-noir-700'
-                      }`}
-                    >
-                      {l}
-                    </button>
+                <label className="text-xs font-mono uppercase text-noir-500">Select Hostel</label>
+                <select
+                  value={newHostelName}
+                  onChange={(e) => setNewHostelName(e.target.value)}
+                  className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs bg-white"
+                >
+                  {HOSTEL_LIST.map((h) => (
+                    <option key={h} value={h}>
+                      {h}
+                    </option>
                   ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-mono uppercase text-noir-500">Block / Wing</label>
+                  <input
+                    type="text"
+                    required
+                    value={newBlock}
+                    onChange={(e) => setNewBlock(e.target.value)}
+                    placeholder="Block B / Wing 2"
+                    className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-mono uppercase text-noir-500">Floor</label>
+                  <input
+                    type="text"
+                    required
+                    value={newFloor}
+                    onChange={(e) => setNewFloor(e.target.value)}
+                    placeholder="3rd Floor"
+                    className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Street Address</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Room Number</label>
                 <input
                   type="text"
                   required
-                  value={newStreet}
-                  onChange={(e) => setNewStreet(e.target.value)}
-                  placeholder="e.g. Flat 601, Altamount Terrace"
-                  className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs text-black"
+                  value={newRoom}
+                  onChange={(e) => setNewRoom(e.target.value)}
+                  placeholder="e.g. 304 (or Desk 42 in Library)"
+                  className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Landmark (Optional)</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Nearest Landmark in Hostel</label>
                 <input
                   type="text"
                   value={newLandmark}
                   onChange={(e) => setNewLandmark(e.target.value)}
-                  placeholder="Near South Promenade"
-                  className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs text-black"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Postal Code</label>
-                <input
-                  type="text"
-                  required
-                  value={newPostal}
-                  onChange={(e) => setNewPostal(e.target.value)}
-                  placeholder="400026"
-                  className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs text-black"
+                  placeholder="Near common room / water cooler"
+                  className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>
 
@@ -550,7 +584,7 @@ export default function CheckoutPage() {
                   type="submit"
                   className="flex-1 py-2.5 rounded-full bg-black text-white text-xs font-semibold hover:bg-noir-800"
                 >
-                  Save Address
+                  Save Hostel Room
                 </button>
               </div>
             </form>

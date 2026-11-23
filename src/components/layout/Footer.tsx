@@ -11,99 +11,96 @@ export default function Footer() {
           <div className="lg:col-span-2 space-y-4">
             <div className="flex items-center gap-2">
               <span className="font-mono text-3xl font-black tracking-widest text-white">NOIR</span>
-              <span className="h-2 w-2 rounded-full bg-white" />
+              <span className="text-[10px] font-mono tracking-widest uppercase bg-white text-black px-2 py-0.5 rounded font-bold">
+                CAMPUS
+              </span>
             </div>
             <p className="text-noir-400 text-sm max-w-sm leading-relaxed">
-              Curated fine dining delivered with architectural precision. Savor recipes from the nation’s celebrated
-              culinary ateliers in bespoke thermal packaging.
+              Direct-to-hostel food delivery system engineered for campus students. Delivering hot meals, late-night
+              study snacks, and cold brews right to your hostel room door.
             </p>
             <div className="pt-2 text-xs text-noir-500 font-mono">
-              Designed & Engineered for connoisseurs of taste.
+              Operating 24/7 • Serving All Boys & Girls Hostels, PG Block & Library.
             </div>
           </div>
 
-          {/* Column 1: Discover */}
+          {/* Column 1: Canteen Menu */}
           <div className="space-y-3">
-            <p className="text-xs font-mono uppercase tracking-widest text-noir-400">Discover</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-noir-400">Campus Food</p>
             <ul className="space-y-2 text-sm text-noir-300">
               <li>
                 <Link href="/restaurants" className="hover:text-white transition-colors">
-                  All Restaurants
+                  All Campus Canteens
                 </Link>
               </li>
               <li>
-                <Link href="/restaurants?category=burgers" className="hover:text-white transition-colors">
-                  Artisanal Burgers
+                <Link href="/restaurants?category=midnight-snacks" className="hover:text-white transition-colors">
+                  Midnight Maggi & Fries
                 </Link>
               </li>
               <li>
-                <Link href="/restaurants?category=pizza" className="hover:text-white transition-colors">
-                  Sourdough Pizzas
+                <Link href="/restaurants?category=rolls" className="hover:text-white transition-colors">
+                  Kathi Rolls & Wraps
                 </Link>
               </li>
               <li>
                 <Link href="/restaurants?category=biryani" className="hover:text-white transition-colors">
-                  Royal Dum Biryani
+                  Hostel Dum Biryani
                 </Link>
               </li>
               <li>
-                <Link href="/restaurants?category=desserts" className="hover:text-white transition-colors">
-                  Pâtisserie & Desserts
+                <Link href="/restaurants?category=thalis" className="hover:text-white transition-colors">
+                  Mess Upgrade Thalis
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 2: Partner & Dashboards */}
+          {/* Column 2: Portals */}
           <div className="space-y-3">
-            <p className="text-xs font-mono uppercase tracking-widest text-noir-400">Portals</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-noir-400">Hostel Portals</p>
             <ul className="space-y-2 text-sm text-noir-300">
               <li>
                 <Link href="/restaurant/dashboard" className="hover:text-white transition-colors flex items-center gap-1">
-                  Restaurant Owner <ArrowUpRight className="w-3 h-3 text-noir-500" />
+                  Canteen Kitchen <ArrowUpRight className="w-3 h-3 text-noir-500" />
                 </Link>
               </li>
               <li>
                 <Link href="/delivery/dashboard" className="hover:text-white transition-colors flex items-center gap-1">
-                  Delivery Partner <ArrowUpRight className="w-3 h-3 text-noir-500" />
+                  Hostel Floor Runner <ArrowUpRight className="w-3 h-3 text-noir-500" />
                 </Link>
               </li>
               <li>
                 <Link href="/admin/dashboard" className="hover:text-white transition-colors flex items-center gap-1">
-                  Admin Governance <ArrowUpRight className="w-3 h-3 text-noir-500" />
+                  Warden Administration <ArrowUpRight className="w-3 h-3 text-noir-500" />
                 </Link>
               </li>
               <li>
                 <Link href="/profile" className="hover:text-white transition-colors">
-                  Customer Account
-                </Link>
-              </li>
-              <li>
-                <Link href="/cart" className="hover:text-white transition-colors">
-                  Gourmet Bag
+                  Student Room & Orders
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Column 3: Legal & Standards */}
+          {/* Column 3: Hostel Zones */}
           <div className="space-y-3">
-            <p className="text-xs font-mono uppercase tracking-widest text-noir-400">Standards</p>
+            <p className="text-xs font-mono uppercase tracking-widest text-noir-400">Hostel Zones</p>
             <ul className="space-y-2 text-sm text-noir-300">
               <li>
-                <span className="text-noir-500 cursor-default">FSSAI Certified</span>
+                <span className="text-noir-500">Boys Hostels (BH 1, 2, 3)</span>
               </li>
               <li>
-                <span className="text-noir-500 cursor-default">100% Eco-Thermal Packaging</span>
+                <span className="text-noir-500">Girls Hostels (GH 1, 2, 3)</span>
               </li>
               <li>
-                <span className="text-noir-500 cursor-default">Secure Razorpay Encryption</span>
+                <span className="text-noir-500">PG & Research Wing</span>
               </li>
               <li>
-                <span className="text-noir-500 cursor-default">Privacy Policy</span>
+                <span className="text-noir-500">24/7 Library Reading Hall</span>
               </li>
               <li>
-                <span className="text-noir-500 cursor-default">Terms of Service</span>
+                <span className="text-noir-500">UPI & Cash on Room Delivery</span>
               </li>
             </ul>
           </div>
@@ -111,8 +108,8 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-noir-900 flex flex-col sm:flex-row items-center justify-between text-xs text-noir-500">
-          <p>© {new Date().getFullYear()} NOIR Technologies Inc. All rights reserved.</p>
-          <p className="font-mono mt-2 sm:mt-0">Black & White Edition • Mumbai • Bengaluru • Delhi</p>
+          <p>© {new Date().getFullYear()} NOIR Campus Food Delivery. Designed for Students.</p>
+          <p className="font-mono mt-2 sm:mt-0">Black & White Edition • Direct-to-Hostel-Room Network</p>
         </div>
       </div>
     </footer>

@@ -5,6 +5,7 @@ export interface Profile {
   email: string;
   full_name: string;
   phone?: string;
+  roll_number?: string;
   role: UserRole;
   avatar_url?: string;
   created_at: string;
@@ -13,13 +14,15 @@ export interface Profile {
 export interface Address {
   id: string;
   user_id: string;
-  label: 'Home' | 'Work' | 'Other';
-  street_address: string;
+  label: string; // 'Room Address' | 'Library' | 'Lab' | 'Hostel'
+  hostel_name: string; // e.g. "Boys Hostel 2 (Satpura)", "Girls Hostel 1 (Nilgiri)"
+  block_wing: string; // e.g. "Block B", "Wing 3"
+  room_number: string; // e.g. "Room 304"
+  floor?: string; // e.g. "3rd Floor"
+  street_address?: string; // formatted summary
   landmark?: string;
-  city: string;
-  postal_code: string;
-  latitude?: number;
-  longitude?: number;
+  city?: string;
+  postal_code?: string;
   is_default: boolean;
   created_at?: string;
 }
@@ -60,7 +63,7 @@ export interface FoodItem {
   name: string;
   slug: string;
   description: string;
-  price: number; // in paise
+  price: number; // in paise (e.g. 8000 for ₹80)
   compare_at_price?: number; // in paise
   image_url: string;
   is_veg: boolean;
@@ -112,11 +115,11 @@ export interface CartItem {
   name: string;
   image_url: string;
   is_veg: boolean;
-  unit_price: number; // base price + selected options in paise
-  base_price: number; // base price in paise
+  unit_price: number; // in paise
+  base_price: number; // in paise
   quantity: number;
   selected_customizations: CartItemOption[];
-  total_price: number; // unit_price * quantity in paise
+  total_price: number; // in paise
   special_notes?: string;
 }
 
@@ -125,7 +128,7 @@ export interface Coupon {
   code: string;
   description: string;
   discount_type: 'percentage' | 'flat';
-  discount_value: number; // percentage (e.g. 20) or paise (e.g. 15000)
+  discount_value: number; // percentage (e.g. 20) or paise (e.g. 5000)
   min_order_amount: number; // in paise
   max_discount_amount?: number; // in paise
   valid_until?: string;
@@ -173,6 +176,7 @@ export interface Order {
   user_id: string;
   customer_name: string;
   customer_phone?: string;
+  student_roll_no?: string;
   restaurant_id: string;
   restaurant_name: string;
   restaurant_address?: string;
@@ -183,7 +187,7 @@ export interface Order {
   status: OrderStatus;
   subtotal_amount: number; // in paise
   delivery_fee: number; // in paise
-  tax_amount: number; // in paise (5% GST)
+  tax_amount: number; // in paise
   discount_amount: number; // in paise
   total_amount: number; // in paise
   payment_method: PaymentMethod;
@@ -194,15 +198,4 @@ export interface Order {
   delivered_at?: string;
   created_at: string;
   updated_at: string;
-}
-
-export interface Review {
-  id: string;
-  restaurant_id: string;
-  user_id: string;
-  user_name: string;
-  user_avatar?: string;
-  rating: number;
-  comment: string;
-  created_at: string;
 }
