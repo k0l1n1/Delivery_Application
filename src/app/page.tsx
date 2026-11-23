@@ -1,332 +1,201 @@
 'use client';
 
-import React, { useState } from 'react';
-import Link from 'next/link';
+import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { MOCK_CATEGORIES, MOCK_RESTAURANTS, MOCK_COUPONS } from '@/lib/data/mock-data';
-import RestaurantCard from '@/components/restaurant/RestaurantCard';
 import FoodItemCard from '@/components/restaurant/FoodItemCard';
 import {
-  ArrowRight,
   Search,
-  Sparkles,
-  Bike,
+  X,
+  Tag,
   Building2,
-  ChevronRight,
-  Quote,
   Clock,
-  Flame,
+  Sparkles,
 } from 'lucide-react';
 
 export default function HomePage() {
-  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [filterVegOnly, setFilterVegOnly] = useState<boolean>(false);
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-    }
-  };
+  // Flatten all campus food items
+  const allFoodItems = useMemo(() => {
+    return MOCK_RESTAURANTS.flatMap((r) =>
+      (r.items || []).map((item) => ({
+        item,
+        restaurant: { id: r.id, name: r.name, delivery_fee: r.delivery_fee },
+      }))
+    );
+  }, []);
 
-  // Student favorite items from the campus food points
-  const popularHostelItems = MOCK_RESTAURANTS.flatMap((r) =>
-    (r.items || []).filter((item) => item.is_popular).map((item) => ({
-      item,
-      restaurant: { id: r.id, name: r.name, delivery_fee: r.delivery_fee },
-    }))
-  ).slice(0, 4);
+  // Filter food items
+  const filteredItems = useMemo(() => {
+    return allFoodItems.filter(({ item }) => {
+      if (filterVegOnly && !item.is_veg) return false;
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const matchName = item.name.toLowerCase().includes(q);
+        const matchDesc = item.description.toLowerCase().includes(q);
+        const matchCat = item.category_name?.toLowerCase().includes(q);
+        if (!matchName && !matchDesc && !matchCat) return false;
+      }
+
+      if (selectedCategory !== 'all') {
+        const catObj = MOCK_CATEGORIES.find((c) => c.slug === selectedCategory);
+        const catName = catObj?.name.toLowerCase() || selectedCategory.toLowerCase();
+        if (item.category_name?.toLowerCase() !== catName) return false;
+      }
+
+      return true;
+    });
+  }, [allFoodItems, searchQuery, selectedCategory, filterVegOnly]);
 
   return (
-    <div className="space-y-20 pb-20 overflow-hidden">
-      {/* 1. HERO SECTION */}
-      <section className="relative pt-10 md:pt-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          {/* Left Text */}
-          <div className="lg:col-span-7 space-y-6">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-noir-200 bg-noir-50 text-xs font-mono tracking-wider uppercase text-noir-800">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Search & Filter Header Bar */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Campus Kitchens Open • Delivering to Hostels Till 4:00 AM</span>
+              <span className="text-xs font-mono uppercase tracking-widest text-noir-500">
+                Delivering to All Hostels Till 4:00 AM
+              </span>
             </div>
-
-            <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tighter text-black uppercase leading-[0.95]">
-              Campus food.
-              <br />
-              <span className="text-noir-400">Delivered to</span>
-              <br />
-              your room.
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black">
+              Hostel Food Menu
             </h1>
-
-            <p className="text-base sm:text-lg text-noir-600 max-w-xl font-normal leading-relaxed">
-              Midnight cheese Maggi, crispy kathi rolls, mess upgrade thalis, and study fuel brewed strong.
-              Delivered straight to your hostel block, floor, and room doorstep.
-            </p>
-
-            {/* Quick Search */}
-            <form onSubmit={handleSearchSubmit} className="pt-2 max-w-md">
-              <div className="relative flex items-center">
-                <Search className="absolute left-4 w-5 h-5 text-noir-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Order Maggi, paneer roll, cold coffee, biryani..."
-                  className="w-full pl-12 pr-28 py-4 rounded-full border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-sm text-black placeholder:text-noir-400 transition-all shadow-subtle"
-                />
-                <button
-                  type="submit"
-                  className="absolute right-2 px-5 py-2.5 rounded-full bg-black text-white hover:bg-noir-800 text-xs font-semibold tracking-wide transition-colors"
-                >
-                  Order
-                </button>
-              </div>
-            </form>
-
-            {/* Call to Actions */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              <Link
-                href="/restaurants"
-                className="px-8 py-4 rounded-full bg-black text-white hover:bg-noir-800 transition-colors text-sm font-semibold tracking-wide flex items-center gap-2 shadow-sm"
-              >
-                <span>Browse Campus Canteens</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-              <Link
-                href="/restaurants?category=midnight-snacks"
-                className="px-6 py-4 rounded-full border border-noir-200 bg-white hover:bg-noir-50 transition-colors text-sm font-semibold text-black"
-              >
-                Midnight Maggi Hub
-              </Link>
-            </div>
-
-            {/* Campus Micro Stats */}
-            <div className="grid grid-cols-3 gap-6 pt-6 border-t border-noir-200 max-w-md">
-              <div>
-                <p className="text-xl sm:text-2xl font-bold font-mono text-black">15m</p>
-                <p className="text-[11px] font-mono text-noir-500 uppercase">Avg. Room Arrival</p>
-              </div>
-              <div>
-                <p className="text-xl sm:text-2xl font-bold font-mono text-black">₹10</p>
-                <p className="text-[11px] font-mono text-noir-500 uppercase">Hostel Runner Tip</p>
-              </div>
-              <div>
-                <p className="text-xl sm:text-2xl font-bold font-mono text-black">4 AM</p>
-                <p className="text-[11px] font-mono text-noir-500 uppercase">Night Owl Delivery</p>
-              </div>
-            </div>
           </div>
 
-          {/* Right Hero Image Card */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative h-[460px] sm:h-[500px] w-full rounded-3xl overflow-hidden border border-noir-200 shadow-elevated">
-              <Image
-                src="https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=1200&q=85"
-                alt="Late night cheese Maggi and student food"
-                fill
-                priority
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
-
-              {/* Spotlight Pill */}
-              <div className="absolute bottom-6 left-6 right-6 p-4 rounded-2xl bg-white/95 backdrop-blur-md border border-noir-200 text-black shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] font-mono uppercase bg-black text-white px-2 py-0.5 rounded-full">
-                      Exam Night Essential
-                    </span>
-                    <h3 className="font-bold text-sm mt-1">Loaded Double Cheese Maggi</h3>
-                    <p className="text-xs text-noir-500">Only ₹75 • The Midnight Canteen (SAC)</p>
-                  </div>
-                  <Link
-                    href="/restaurants/the-midnight-canteen"
-                    className="p-2.5 rounded-full bg-black text-white hover:scale-105 transition-transform"
-                  >
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-                </div>
-              </div>
-            </div>
+          {/* Quick Info Badges */}
+          <div className="flex items-center gap-2 text-xs font-mono text-noir-600">
+            <span className="bg-noir-100 border border-noir-200 px-3 py-1 rounded-full flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-black" /> 10-15m to Room
+            </span>
+            <span className="bg-noir-100 border border-noir-200 px-3 py-1 rounded-full flex items-center gap-1.5">
+              <Building2 className="w-3.5 h-3.5 text-black" /> Direct Room Drop
+            </span>
           </div>
         </div>
-      </section>
 
-      {/* 2. FOOD CATEGORIES */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-noir-500">Student Craving Menu</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black mt-1">
-              Popular Campus Food Categories
-            </h2>
-          </div>
-          <Link
-            href="/restaurants"
-            className="text-xs font-semibold text-noir-600 hover:text-black flex items-center gap-1 transition-colors"
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-noir-400" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search Maggi, paneer roll, cold coffee, chicken biryani, thali..."
+            className="w-full pl-11 pr-10 py-3 rounded-full border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-sm text-black placeholder:text-noir-400 transition-all shadow-subtle"
+          />
+          {searchQuery && (
+            <button
+              onClick={() => setSearchQuery('')}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-noir-400 hover:text-black"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Food Categories Strip & Veg Filter */}
+      <div className="flex items-center justify-between gap-4 border-b border-noir-200 pb-3">
+        <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
+          <button
+            onClick={() => setSelectedCategory('all')}
+            className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+              selectedCategory === 'all'
+                ? 'bg-black text-white'
+                : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
+            }`}
           >
-            <span>View All Outlets</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            All Food ({allFoodItems.length})
+          </button>
           {MOCK_CATEGORIES.map((cat) => (
-            <Link
+            <button
               key={cat.id}
-              href={`/restaurants?category=${cat.slug}`}
-              className="group rounded-2xl overflow-hidden border border-noir-200 bg-white hover:border-black transition-smooth shadow-subtle p-3.5 flex flex-col items-center text-center"
+              onClick={() => setSelectedCategory(cat.slug)}
+              className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
+                selectedCategory === cat.slug
+                  ? 'bg-black text-white'
+                  : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
+              }`}
             >
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden mb-3 bg-noir-100 group-hover:scale-105 transition-smooth">
-                <Image src={cat.image_url} alt={cat.name} fill className="object-cover" sizes="96px" />
-              </div>
-              <h3 className="text-xs sm:text-sm font-bold text-black group-hover:text-noir-800">{cat.name}</h3>
-              <p className="text-[11px] text-noir-500 line-clamp-1 mt-0.5">{cat.description}</p>
-            </Link>
+              {cat.name}
+            </button>
           ))}
         </div>
-      </section>
 
-      {/* 3. STUDENT PROMO COUPONS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {MOCK_COUPONS.slice(0, 2).map((coupon) => (
-            <div
-              key={coupon.id}
-              className="relative rounded-3xl bg-black text-white p-6 sm:p-8 border border-noir-800 overflow-hidden flex flex-col justify-between"
-            >
-              <div className="space-y-2 relative z-10">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono tracking-widest uppercase bg-white text-black px-2.5 py-0.5 rounded-full font-bold">
-                    Campus Discount
-                  </span>
-                  <span className="text-xs text-noir-400 font-mono">Exam Season Pass</span>
-                </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">{coupon.code}</h3>
-                <p className="text-sm text-noir-300">{coupon.description}</p>
-              </div>
+        {/* Veg Only Switch */}
+        <button
+          onClick={() => setFilterVegOnly(!filterVegOnly)}
+          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold transition-colors flex-shrink-0 ${
+            filterVegOnly
+              ? 'border-emerald-600 bg-emerald-50 text-emerald-800'
+              : 'border-noir-300 bg-white text-noir-700 hover:bg-noir-50'
+          }`}
+        >
+          <span className="w-2.5 h-2.5 rounded-full border border-emerald-600 flex items-center justify-center p-0.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
+          </span>
+          <span>Veg Only</span>
+        </button>
+      </div>
 
-              <div className="pt-6 relative z-10 flex items-center justify-between">
-                <span className="text-xs font-mono text-noir-400">
-                  {coupon.discount_type === 'flat'
-                    ? `Flat ₹${coupon.discount_value / 100} Off on orders above ₹${coupon.min_order_amount / 100}`
-                    : `${coupon.discount_value}% Discount`}
-                </span>
-                <Link
-                  href="/restaurants"
-                  className="px-4 py-2 rounded-full bg-white text-black text-xs font-semibold hover:bg-noir-100 transition-colors"
-                >
-                  Use Coupon
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 4. CAMPUS FOOD OUTLETS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <span className="text-xs font-mono uppercase tracking-widest text-noir-500">Hostel Delivery Hubs</span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black mt-1">
-              Campus Canteens & Kitchens
-            </h2>
-          </div>
-          <Link
-            href="/restaurants"
-            className="text-xs font-semibold text-noir-600 hover:text-black flex items-center gap-1 transition-colors"
+      {/* Student Coupons Mini-Banner */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {MOCK_COUPONS.slice(0, 2).map((c) => (
+          <div
+            key={c.id}
+            className="p-3.5 rounded-2xl bg-black text-white flex items-center justify-between border border-noir-800 text-xs"
           >
-            <span>Explore All</span>
-            <ChevronRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {MOCK_RESTAURANTS.map((hub) => (
-            <RestaurantCard key={hub.id} restaurant={hub} />
-          ))}
-        </div>
-      </section>
-
-      {/* 5. POPULAR STUDENT DISHES */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 bg-noir-50 py-10 rounded-3xl border border-noir-200">
-        <div className="mb-8">
-          <span className="text-xs font-mono uppercase tracking-widest text-noir-500">Late-Night Study Fuel</span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black mt-1">
-            Most Ordered to Hostel Rooms
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {popularHostelItems.map(({ item, restaurant }) => (
-            <FoodItemCard key={item.id} item={item} restaurant={restaurant} />
-          ))}
-        </div>
-      </section>
-
-      {/* 6. HOW HOSTEL DELIVERY WORKS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-14">
-          <span className="text-xs font-mono uppercase tracking-widest text-noir-500">From Canteen To Room</span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-black mt-2">
-            How NOIR Hostel Delivery Works
-          </h2>
-          <p className="text-xs sm:text-sm text-noir-600 mt-2">
-            No walking across campus in the cold. We deliver directly to your floor and room.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="p-8 rounded-3xl bg-white border border-noir-200 space-y-3 shadow-subtle hover:border-black transition-smooth">
-            <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center font-mono font-bold text-sm">
-              01
+            <div className="flex items-center gap-2.5">
+              <div className="p-1.5 rounded-lg bg-noir-800 text-white">
+                <Tag className="w-3.5 h-3.5" />
+              </div>
+              <div>
+                <span className="font-mono font-bold tracking-wider">{c.code}</span>
+                <p className="text-[11px] text-noir-400">{c.description}</p>
+              </div>
             </div>
-            <h3 className="text-base font-bold text-black">Pick Your Food & Add Room #</h3>
-            <p className="text-xs text-noir-500 leading-relaxed">
-              Browse midnight Maggi, rolls, or mess thalis. Select your Hostel (e.g. BH-2, GH-1), block, and room number.
-            </p>
+            <span className="font-mono text-[10px] uppercase bg-white/20 px-2 py-0.5 rounded text-noir-200">
+              Auto-Applies at Checkout
+            </span>
           </div>
+        ))}
+      </div>
 
-          <div className="p-8 rounded-3xl bg-white border border-noir-200 space-y-3 shadow-subtle hover:border-black transition-smooth">
-            <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center font-mono font-bold text-sm">
-              02
-            </div>
-            <h3 className="text-base font-bold text-black">Kitchen Prepares in Fresh Vaults</h3>
-            <p className="text-xs text-noir-500 leading-relaxed">
-              The canteen cooks your meal fresh and packs it into thermal insulated boxes to keep food piping hot.
-            </p>
-          </div>
-
-          <div className="p-8 rounded-3xl bg-white border border-noir-200 space-y-3 shadow-subtle hover:border-black transition-smooth">
-            <div className="w-10 h-10 rounded-xl bg-black text-white flex items-center justify-center font-mono font-bold text-sm">
-              03
-            </div>
-            <h3 className="text-base font-bold text-black">Runner Knocks on Your Door</h3>
-            <p className="text-xs text-noir-500 leading-relaxed">
-              Designated student runners deliver on campus cycles directly to your hostel floor. Pay via UPI or Cash on Delivery.
-            </p>
-          </div>
+      {/* Main Food Items Grid */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between text-xs font-mono text-noir-500">
+          <span>{filteredItems.length} Food Dishes Available for Room Delivery</span>
+          {filterVegOnly && <span className="text-emerald-700 font-bold">Showing Pure Veg Only</span>}
         </div>
-      </section>
 
-      {/* 7. STUDENT TESTIMONIALS */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="p-8 sm:p-12 rounded-3xl bg-black text-white border border-noir-800">
-          <div className="max-w-2xl mx-auto space-y-6 text-center">
-            <Quote className="w-8 h-8 text-noir-600 mx-auto" />
-            <p className="text-base sm:text-xl font-light tracking-wide leading-relaxed">
-              &ldquo;During semester finals at 2:30 AM, having hot cheese Maggi and iced coffee arrive straight to Room 312
-              in Boys Hostel 2 was a literal lifesaver. Never stepping out of the hostel for food again.&rdquo;
-            </p>
-            <div className="pt-2">
-              <p className="font-bold text-sm">Aman Verma (B.Tech CS &apos;25)</p>
-              <p className="text-xs text-noir-400 font-mono">Aravali Hostel, Block B</p>
-            </div>
+        {filteredItems.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {filteredItems.map(({ item, restaurant }) => (
+              <FoodItemCard key={item.id} item={item} restaurant={restaurant} />
+            ))}
           </div>
-        </div>
-      </section>
+        ) : (
+          <div className="py-20 text-center bg-noir-50 rounded-3xl border border-noir-200 space-y-3">
+            <p className="font-bold text-black">No food items found matching your filter.</p>
+            <button
+              onClick={() => {
+                setSearchQuery('');
+                setSelectedCategory('all');
+                setFilterVegOnly(false);
+              }}
+              className="px-5 py-2 rounded-full bg-black text-white text-xs font-semibold"
+            >
+              Reset Filters
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
