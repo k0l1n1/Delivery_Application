@@ -144,27 +144,20 @@ export default function HomePage() {
         </button>
       </div>
 
-      {/* Student Coupons Mini-Banner */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {MOCK_COUPONS.slice(0, 2).map((c) => (
-          <div
-            key={c.id}
-            className="p-3.5 rounded-2xl bg-black text-white flex items-center justify-between border border-noir-800 text-xs"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="p-1.5 rounded-lg bg-noir-800 text-white">
-                <Tag className="w-3.5 h-3.5" />
-              </div>
-              <div>
-                <span className="font-mono font-bold tracking-wider">{c.code}</span>
-                <p className="text-[11px] text-noir-400">{c.description}</p>
-              </div>
-            </div>
-            <span className="font-mono text-[10px] uppercase bg-white/20 px-2 py-0.5 rounded text-noir-200">
-              Auto-Applies at Checkout
-            </span>
+      {/* Discounts Notice */}
+      <div className="p-3.5 rounded-2xl bg-noir-50 border border-noir-200 flex items-center justify-between text-xs text-noir-600">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-lg bg-noir-200 text-black">
+            <Tag className="w-3.5 h-3.5" />
           </div>
-        ))}
+          <div>
+            <span className="font-bold text-black">No current discounts</span>
+            <p className="text-[11px] text-noir-500">Standard campus canteen menu pricing applies</p>
+          </div>
+        </div>
+        <span className="font-mono text-[10px] uppercase bg-white px-2.5 py-1 rounded-full border border-noir-200 text-noir-500">
+          Standard Rates
+        </span>
       </div>
 
       {/* Main Food Items Grid */}

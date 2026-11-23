@@ -219,27 +219,8 @@ export default function CartPage() {
             )}
 
             {!appliedCoupon && (
-              <div className="pt-2 border-t border-noir-100 flex flex-wrap gap-2 text-[11px]">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCouponInput('EXAMNIGHT');
-                    applyCoupon('EXAMNIGHT');
-                  }}
-                  className="px-2.5 py-1 rounded-full border border-noir-200 bg-noir-50 text-noir-700 hover:border-black font-mono"
-                >
-                  EXAMNIGHT (Flat ₹40)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setCouponInput('HOSTELMATE');
-                    applyCoupon('HOSTELMATE');
-                  }}
-                  className="px-2.5 py-1 rounded-full border border-noir-200 bg-noir-50 text-noir-700 hover:border-black font-mono"
-                >
-                  HOSTELMATE (Flat ₹25)
-                </button>
+              <div className="pt-2 border-t border-noir-100 text-[11px] text-noir-500 font-mono">
+                No current discounts available
               </div>
             )}
           </div>
