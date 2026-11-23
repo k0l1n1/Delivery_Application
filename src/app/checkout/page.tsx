@@ -48,7 +48,7 @@ export default function CheckoutPage() {
   );
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('razorpay');
   const [hostelInstructions, setHostelInstructions] = useState('');
-  const [studentRoll, setStudentRoll] = useState(user?.roll_number || '2023CSB1042');
+  const [studentRoll, setStudentRoll] = useState(user?.roll_number || '');
   const [isProcessing, setIsProcessing] = useState(false);
   const [isAddAddressModalOpen, setIsAddAddressModalOpen] = useState(false);
 

@@ -5,14 +5,13 @@ import { CartProvider } from '@/lib/store/cart-store';
 import { OrderProvider } from '@/lib/store/order-store';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import RoleSwitcherBar from '@/components/layout/RoleSwitcherBar';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
-  title: 'NOIR – Good Food. Delivered Differently.',
+  title: 'NOIR – Campus & Hostel Food Delivery',
   description:
-    'Experience curated fine dining and culinary excellence delivered to your residence with minimalist precision.',
-  keywords: ['food delivery', 'fine dining', 'gourmet', 'noir', 'luxury food delivery'],
+    'Order late-night snacks, meals, and drinks delivered straight to your hostel room.',
+  keywords: ['hostel food delivery', 'campus food', 'night canteen', 'student food delivery'],
 };
 
 export default function RootLayout({
@@ -29,7 +28,6 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <OrderProvider>
-              <RoleSwitcherBar />
               <Navbar />
               <main className="flex-1 w-full">{children}</main>
               <Footer />
