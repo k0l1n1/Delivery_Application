@@ -21,7 +21,6 @@ export default function CartPage() {
   const {
     items,
     restaurantName,
-    itemCount,
     subtotal,
     deliveryFee,
     taxAmount,
@@ -67,7 +66,7 @@ export default function CartPage() {
           </p>
         </div>
         <Link
-          href="/restaurants"
+          href="/"
           className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-black text-white hover:bg-noir-800 transition-colors text-xs font-semibold tracking-wide"
         >
           <span>Browse Food Menu</span>

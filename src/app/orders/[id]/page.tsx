@@ -43,7 +43,7 @@ export default function OrderTrackingPage() {
           The order ID &ldquo;{orderId}&rdquo; was not found in records.
         </p>
         <Link
-          href="/restaurants"
+          href="/"
           className="inline-block px-6 py-2.5 rounded-full bg-black text-white text-xs font-semibold"
         >
           Return to Menu

@@ -5,7 +5,7 @@ import { useAuth } from '@/lib/store/auth-context';
 import { useOrders } from '@/lib/store/order-store';
 import { MOCK_RESTAURANTS } from '@/lib/data/mock-data';
 import { FoodItem } from '@/types/database';
-import { formatCurrency, formatDate } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 import {
   Store,
   ChefHat,

@@ -7,8 +7,6 @@ import {
   Search,
   X,
   Tag,
-  Building2,
-  Clock,
 } from 'lucide-react';
 
 export default function HomePage() {

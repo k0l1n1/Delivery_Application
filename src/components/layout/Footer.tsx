@@ -26,27 +26,27 @@ export default function Footer() {
             <p className="text-xs font-mono uppercase tracking-widest text-noir-400">Food Menu</p>
             <ul className="space-y-2 text-sm text-noir-300">
               <li>
-                <Link href="/restaurants" className="hover:text-white transition-colors">
-                  All Outlets
+                <Link href="/" className="hover:text-white transition-colors">
+                  Full Menu
                 </Link>
               </li>
               <li>
-                <Link href="/restaurants?category=millet-bowls" className="hover:text-white transition-colors">
+                <Link href="/?category=millet-bowls" className="hover:text-white transition-colors">
                   Millet Bowls
                 </Link>
               </li>
               <li>
-                <Link href="/restaurants?category=wraps-rolls" className="hover:text-white transition-colors">
+                <Link href="/?category=wraps-rolls" className="hover:text-white transition-colors">
                   Ragi Wraps
                 </Link>
               </li>
               <li>
-                <Link href="/restaurants?category=biryani" className="hover:text-white transition-colors">
+                <Link href="/?category=biryani" className="hover:text-white transition-colors">
                   Millet Dum Biryani
                 </Link>
               </li>
               <li>
-                <Link href="/restaurants?category=brews-teas" className="hover:text-white transition-colors">
+                <Link href="/?category=brews-teas" className="hover:text-white transition-colors">
                   Brews & Juices
                 </Link>
               </li>

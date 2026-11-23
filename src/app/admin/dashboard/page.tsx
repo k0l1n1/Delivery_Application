@@ -8,8 +8,6 @@ import { Coupon } from '@/types/database';
 import { formatCurrency, formatDate } from '@/lib/utils';
 import {
   ShieldCheck,
-  Building2,
-  Bike,
   Plus,
 } from 'lucide-react';
 

@@ -42,5 +42,5 @@ export function formatDate(dateString: string): string {
  */
 export function generateOrderNumber(): string {
   const randomPart = Math.floor(1000 + Math.random() * 9000);
-  return `NOIR-${randomPart}`;
+  return `MC-${randomPart}`;
 }

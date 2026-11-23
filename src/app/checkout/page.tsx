@@ -5,11 +5,10 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/lib/store/cart-store';
 import { useAuth } from '@/lib/store/auth-context';
 import { useOrders } from '@/lib/store/order-store';
-import { formatCurrency } from '@/lib/utils';
-import { PaymentMethod, Address } from '@/types/database';
+import { formatCurrency, generateOrderNumber } from '@/lib/utils';
+import { PaymentMethod } from '@/types/database';
 import { DELIVERY_LOCATIONS } from '@/lib/data/mock-data';
 import {
-  Building2,
   CreditCard,
   Banknote,
   Check,
@@ -63,7 +62,7 @@ export default function CheckoutPage() {
       <div className="max-w-xl mx-auto py-20 px-4 text-center space-y-4">
         <h2 className="text-xl font-bold">No active items to checkout</h2>
         <button
-          onClick={() => router.push('/restaurants')}
+          onClick={() => router.push('/')}
           className="px-6 py-2.5 rounded-full bg-black text-white text-xs font-semibold"
         >
           Browse Food Menu
@@ -103,7 +102,7 @@ export default function CheckoutPage() {
 
     try {
       if (paymentMethod === 'cod') {
-        const orderNumber = `MC-${Math.floor(1000 + Math.random() * 9000)}`;
+        const orderNumber = generateOrderNumber();
         const order = createOrder({
           order_number: orderNumber,
           user_id: user?.id || 'guest-user',
@@ -225,7 +224,7 @@ export default function CheckoutPage() {
   };
 
   const completeAndRedirectOrder = (method: PaymentMethod, payStatus: 'completed' | 'pending') => {
-    const orderNumber = `MC-${Math.floor(1000 + Math.random() * 9000)}`;
+    const orderNumber = generateOrderNumber();
     const order = createOrder({
       order_number: orderNumber,
       user_id: user?.id || 'guest-user',

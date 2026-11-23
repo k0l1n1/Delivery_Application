@@ -35,7 +35,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [restaurantId, setRestaurantId] = useState<string | null>(null);
   const [restaurantName, setRestaurantName] = useState<string | null>(null);
-  const [restaurantDeliveryFee, setRestaurantDeliveryFee] = useState<number>(4900);
+  const [restaurantDeliveryFee, setRestaurantDeliveryFee] = useState<number>(1000);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
 
   // Restore cart on mount
