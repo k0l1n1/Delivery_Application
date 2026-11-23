@@ -20,6 +20,7 @@
   --secondary-foreground: #A3A3A3;
   --card: #121212;
   --border: #262626;
+  color-scheme: dark;
 }
 
 * {
@@ -33,6 +34,69 @@ body {
   letter-spacing: -0.015em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global Dark Mode High-Contrast Rules */
+.dark body {
+  background-color: #0A0A0A !important;
+  color: #EDEDED !important;
+}
+
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #FFFFFF !important;
+}
+
+/* Force dark visibility: any text-black element is white on dark background unless inside an explicit white button/badge */
+.dark .text-black:not(.dark\:text-black):not(button.bg-white *):not(.bg-white *):not(button.dark\:bg-white *):not(.dark\:bg-white *) {
+  color: #EDEDED !important;
+}
+
+/* Containers with bg-white become dark surface */
+.dark div.bg-white:not(button.bg-white):not(.dark\:bg-white):not(span.bg-white):not(.keep-white) {
+  background-color: #121212 !important;
+}
+
+.dark .border-noir-200,
+.dark .border-noir-300 {
+  border-color: #262626 !important;
+}
+
+.dark .bg-noir-50,
+.dark .bg-noir-100 {
+  background-color: #171717 !important;
+}
+
+.dark .text-noir-800,
+.dark .text-noir-700 {
+  color: #D4D4D4 !important;
+}
+
+.dark .text-noir-600,
+.dark .text-noir-500 {
+  color: #A3A3A3 !important;
+}
+
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select {
+  background-color: #171717 !important;
+  color: #FFFFFF !important;
+  border-color: #262626 !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #737373 !important;
+}
+
+.dark ::selection {
+  background-color: #FFFFFF;
+  color: #000000;
 }
 
 ::selection {
@@ -50,13 +114,25 @@ body {
   background: #FAFAFA;
 }
 
+.dark ::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+
 ::-webkit-scrollbar-thumb {
   background: #D4D4D4;
   border-radius: 9999px;
 }
 
+.dark ::-webkit-scrollbar-thumb {
+  background: #262626;
+}
+
 ::-webkit-scrollbar-thumb:hover {
   background: #A3A3A3;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #404040;
 }
 
 /* Smooth transitions */
@@ -76,6 +152,12 @@ body {
 
 .shimmer-bg {
   background: linear-gradient(90deg, #F5F5F5 25%, #EBEBEB 50%, #F5F5F5 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .shimmer-bg {
+  background: linear-gradient(90deg, #171717 25%, #262626 50%, #171717 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s infinite;
 }
