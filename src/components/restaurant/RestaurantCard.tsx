@@ -15,10 +15,10 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
   return (
     <Link
       href={`/restaurants/${restaurant.slug}`}
-      className="group block bg-white rounded-2xl border border-noir-200 overflow-hidden hover:border-black transition-smooth shadow-subtle hover:shadow-premium"
+      className="group block bg-white dark:bg-noir-900 rounded-2xl border border-noir-200 dark:border-noir-800 overflow-hidden hover:border-black dark:hover:border-noir-500 transition-smooth shadow-subtle hover:shadow-premium"
     >
       {/* Cover Image Container */}
-      <div className="relative h-52 w-full overflow-hidden bg-noir-100">
+      <div className="relative h-52 w-full overflow-hidden bg-noir-100 dark:bg-noir-800">
         <Image
           src={restaurant.cover_image}
           alt={restaurant.name}
@@ -60,14 +60,14 @@ export default function RestaurantCard({ restaurant }: RestaurantCardProps) {
       {/* Details Section */}
       <div className="p-4 space-y-2">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-bold text-base text-black group-hover:text-noir-800 transition-colors line-clamp-1">
+          <h3 className="font-bold text-base text-black dark:text-white group-hover:text-noir-800 dark:group-hover:text-noir-200 transition-colors line-clamp-1">
             {restaurant.name}
           </h3>
         </div>
 
-        <p className="text-xs text-noir-500 line-clamp-1">{restaurant.cuisines.join(' • ')}</p>
+        <p className="text-xs text-noir-500 dark:text-noir-400 line-clamp-1">{restaurant.cuisines.join(' • ')}</p>
 
-        <div className="pt-2 border-t border-noir-100 flex items-center justify-between text-xs text-noir-600 font-mono">
+        <div className="pt-2 border-t border-noir-100 dark:border-noir-800 flex items-center justify-between text-xs text-noir-600 dark:text-noir-400 font-mono">
           <div className="flex items-center gap-1.5">
             <Bike className="w-3.5 h-3.5 text-noir-400" />
             <span>{restaurant.delivery_fee === 0 ? 'Free Delivery' : formatCurrency(restaurant.delivery_fee)}</span>

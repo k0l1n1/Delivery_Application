@@ -36,12 +36,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Global Dark Mode High-Contrast Rules */
+/* ==========================================================================
+   GLOBAL DARK MODE HIGH-CONTRAST ENGINE
+   ========================================================================== */
+
+/* Dark Body */
 .dark body {
   background-color: #0A0A0A !important;
   color: #EDEDED !important;
 }
 
+/* All Headings in Dark Mode */
 .dark h1,
 .dark h2,
 .dark h3,
@@ -51,29 +56,58 @@ body {
   color: #FFFFFF !important;
 }
 
-/* Force dark visibility: any text-black element is white on dark background unless inside an explicit white button/badge */
-.dark .text-black:not(.dark\:text-black):not(button.bg-white *):not(.bg-white *):not(button.dark\:bg-white *):not(.dark\:bg-white *) {
+/* All text-black elements become bright white on dark surfaces */
+.dark .text-black:not(button.bg-white *):not(a.bg-white *):not(span.bg-white *):not(.keep-black) {
+  color: #FFFFFF !important;
+}
+
+/* Containers with bg-white become sleek elevated dark cards */
+.dark div.bg-white:not(button.bg-white):not(a.bg-white):not(span.bg-white):not(.keep-white),
+.dark form.bg-white,
+.dark section.bg-white,
+.dark article.bg-white,
+.dark aside.bg-white {
+  background-color: #121212 !important;
   color: #EDEDED !important;
 }
 
-/* Containers with bg-white become dark surface */
-.dark div.bg-white:not(button.bg-white):not(.dark\:bg-white):not(span.bg-white):not(.keep-white) {
-  background-color: #121212 !important;
+/* Primary black buttons become white buttons with black text in dark mode */
+.dark button.bg-black:not(.keep-black),
+.dark a.bg-black:not(.keep-black) {
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
 }
 
+.dark button.bg-black:not(.keep-black) *,
+.dark a.bg-black:not(.keep-black) * {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+/* Subtle backgrounds in dark mode */
+.dark .bg-noir-50,
+.dark .bg-noir-100 {
+  background-color: #171717 !important;
+  color: #EDEDED !important;
+}
+
+.dark .bg-noir-200 {
+  background-color: #262626 !important;
+  color: #EDEDED !important;
+}
+
+/* Borders in dark mode */
+.dark .border-noir-100,
 .dark .border-noir-200,
 .dark .border-noir-300 {
   border-color: #262626 !important;
 }
 
-.dark .bg-noir-50,
-.dark .bg-noir-100 {
-  background-color: #171717 !important;
-}
-
+/* Secondary & Muted Typography in dark mode */
+.dark .text-noir-900,
 .dark .text-noir-800,
 .dark .text-noir-700 {
-  color: #D4D4D4 !important;
+  color: #EDEDED !important;
 }
 
 .dark .text-noir-600,
@@ -81,6 +115,11 @@ body {
   color: #A3A3A3 !important;
 }
 
+.dark .text-noir-400 {
+  color: #8A8A8A !important;
+}
+
+/* Forms, Inputs, Dropdowns, Textareas */
 .dark input:not([type="checkbox"]):not([type="radio"]),
 .dark textarea,
 .dark select {
@@ -94,6 +133,46 @@ body {
   color: #737373 !important;
 }
 
+/* Tables in dark mode */
+.dark table,
+.dark thead,
+.dark tbody,
+.dark tr,
+.dark th,
+.dark td {
+  border-color: #262626 !important;
+}
+
+.dark th {
+  color: #A3A3A3 !important;
+}
+
+.dark td {
+  color: #EDEDED !important;
+}
+
+/* SVG icons & telemetry map paths in dark mode */
+.dark svg path[stroke="#000000"],
+.dark svg path[stroke="black"],
+.dark svg circle[stroke="#000000"],
+.dark svg circle[stroke="black"] {
+  stroke: #FFFFFF !important;
+}
+
+.dark svg text[fill="#000000"],
+.dark svg text[fill="black"] {
+  fill: #FFFFFF !important;
+}
+
+.dark svg circle[fill="#000000"] {
+  fill: #FFFFFF !important;
+}
+
+.dark svg circle[fill="#FFFFFF"] {
+  fill: #000000 !important;
+}
+
+/* Selection */
 .dark ::selection {
   background-color: #FFFFFF;
   color: #000000;
