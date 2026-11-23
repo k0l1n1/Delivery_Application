@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
-import Image from 'next/image';
-import { MOCK_CATEGORIES, MOCK_RESTAURANTS, MOCK_COUPONS } from '@/lib/data/mock-data';
+import { MOCK_CATEGORIES, MOCK_RESTAURANTS } from '@/lib/data/mock-data';
 import FoodItemCard from '@/components/restaurant/FoodItemCard';
 import {
   Search,
@@ -10,7 +9,6 @@ import {
   Tag,
   Building2,
   Clock,
-  Sparkles,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -60,7 +58,7 @@ export default function HomePage() {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-mono uppercase tracking-widest text-noir-500">
-                Delivering to All Hostels Till 4:00 AM
+                Delivering Across Campus 7:00 AM – 11:00 PM
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black">
@@ -71,10 +69,10 @@ export default function HomePage() {
           {/* Quick Info Badges */}
           <div className="flex items-center gap-2 text-xs font-mono text-noir-600">
             <span className="bg-noir-100 border border-noir-200 px-3 py-1 rounded-full flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-black" /> 10-15m to Room
+              <Clock className="w-3.5 h-3.5 text-black" /> 10-15m Delivery
             </span>
             <span className="bg-noir-100 border border-noir-200 px-3 py-1 rounded-full flex items-center gap-1.5">
-              <Building2 className="w-3.5 h-3.5 text-black" /> Direct Room Drop
+              <Building2 className="w-3.5 h-3.5 text-black" /> Desk & Doorstep Drop
             </span>
           </div>
         </div>
@@ -86,7 +84,7 @@ export default function HomePage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search Maggi, paneer roll, cold coffee, chicken biryani, thali..."
+            placeholder="Search millet bowls, ragi wraps, cold brews, bajra burgers..."
             className="w-full pl-11 pr-10 py-3 rounded-full border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-sm text-black placeholder:text-noir-400 transition-all shadow-subtle"
           />
           {searchQuery && (
@@ -111,7 +109,7 @@ export default function HomePage() {
                 : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            All Food ({allFoodItems.length})
+            All Items ({allFoodItems.length})
           </button>
           {MOCK_CATEGORIES.map((cat) => (
             <button
@@ -152,7 +150,7 @@ export default function HomePage() {
           </div>
           <div>
             <span className="font-bold text-black">No current discounts</span>
-            <p className="text-[11px] text-noir-500">Standard campus canteen menu pricing applies</p>
+            <p className="text-[11px] text-noir-500">Standard menu pricing applies across all items</p>
           </div>
         </div>
         <span className="font-mono text-[10px] uppercase bg-white px-2.5 py-1 rounded-full border border-noir-200 text-noir-500">
@@ -163,7 +161,7 @@ export default function HomePage() {
       {/* Main Food Items Grid */}
       <div className="space-y-4">
         <div className="flex items-center justify-between text-xs font-mono text-noir-500">
-          <span>{filteredItems.length} Food Dishes Available for Room Delivery</span>
+          <span>{filteredItems.length} Dishes Available for Delivery</span>
           {filterVegOnly && <span className="text-emerald-700 font-bold">Showing Pure Veg Only</span>}
         </div>
 

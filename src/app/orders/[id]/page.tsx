@@ -9,7 +9,6 @@ import { formatCurrency, formatDate } from '@/lib/utils';
 import { OrderStatus } from '@/types/database';
 import {
   CheckCircle2,
-  Clock,
   Building2,
   Phone,
   Bike,
@@ -20,7 +19,6 @@ import {
   PartyPopper,
   Play,
   RotateCcw,
-  GraduationCap,
 } from 'lucide-react';
 
 export default function OrderTrackingPage() {
@@ -40,27 +38,27 @@ export default function OrderTrackingPage() {
   if (!order) {
     return (
       <div className="max-w-xl mx-auto py-24 px-4 text-center space-y-4">
-        <h2 className="text-xl font-bold">Hostel Order Not Found</h2>
+        <h2 className="text-xl font-bold">Order Not Found</h2>
         <p className="text-xs text-noir-500">
-          The order ID &ldquo;{orderId}&rdquo; was not found in campus records.
+          The order ID &ldquo;{orderId}&rdquo; was not found in records.
         </p>
         <Link
           href="/restaurants"
           className="inline-block px-6 py-2.5 rounded-full bg-black text-white text-xs font-semibold"
         >
-          Return to Canteen Menu
+          Return to Menu
         </Link>
       </div>
     );
   }
 
   const stages: { key: OrderStatus; label: string; icon: React.ReactNode; desc: string }[] = [
-    { key: 'placed', label: 'Order Sent to Canteen', icon: <Package className="w-4 h-4" />, desc: 'Ticket received by kitchen' },
-    { key: 'confirmed', label: 'Kitchen Confirmed', icon: <Store className="w-4 h-4" />, desc: 'Cooking station preparing' },
-    { key: 'preparing', label: 'Cooking & Thermal Packing', icon: <ChefHat className="w-4 h-4" />, desc: 'Sealed in insulated box' },
-    { key: 'ready', label: 'Assigned to Hostel Runner', icon: <ShieldCheck className="w-4 h-4" />, desc: 'Handed over to runner' },
-    { key: 'out_for_delivery', label: 'Runner at Hostel Gate / Floor', icon: <Bike className="w-4 h-4" />, desc: 'Climbing to your room floor' },
-    { key: 'delivered', label: 'Delivered to Room Door', icon: <PartyPopper className="w-4 h-4" />, desc: 'Handed over at room door' },
+    { key: 'placed', label: 'Order Sent to Kitchen', icon: <Package className="w-4 h-4" />, desc: 'Ticket received by kitchen staff' },
+    { key: 'confirmed', label: 'Kitchen Confirmed', icon: <Store className="w-4 h-4" />, desc: 'Cooking station preparing ingredients' },
+    { key: 'preparing', label: 'Cooking & Thermal Packing', icon: <ChefHat className="w-4 h-4" />, desc: 'Wholesome meal packed fresh' },
+    { key: 'ready', label: 'Assigned to Cafe Courier', icon: <ShieldCheck className="w-4 h-4" />, desc: 'Handed over to delivery courier' },
+    { key: 'out_for_delivery', label: 'Courier on the Way', icon: <Bike className="w-4 h-4" />, desc: 'Approaching your building' },
+    { key: 'delivered', label: 'Delivered to Doorstep', icon: <PartyPopper className="w-4 h-4" />, desc: 'Handed over at your desk / door' },
   ];
 
   const currentStageIndex = stages.findIndex((s) => s.key === order.status);
@@ -85,7 +83,7 @@ export default function OrderTrackingPage() {
         <div>
           <div className="flex items-center gap-2">
             <span className="font-mono text-xs uppercase tracking-widest text-noir-500">
-              Hostel Live Room Delivery
+              Live Order Telemetry
             </span>
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           </div>
@@ -100,7 +98,7 @@ export default function OrderTrackingPage() {
         {/* Live Simulation Test Bar */}
         <div className="flex items-center gap-2 bg-noir-100 p-2 rounded-2xl border border-noir-300">
           <span className="text-[11px] font-mono uppercase text-noir-600 px-2 font-medium">
-            Test Runner Simulation:
+            Courier Simulation:
           </span>
           <button
             onClick={handleAdvanceStage}
@@ -134,7 +132,7 @@ export default function OrderTrackingPage() {
               </div>
 
               <div className="text-right">
-                <p className="text-xs font-mono uppercase text-noir-400">Estimated Drop-Off</p>
+                <p className="text-xs font-mono uppercase text-noir-400">Estimated Delivery</p>
                 <p className="text-lg font-bold font-mono text-black">
                   {order.status === 'delivered' ? 'Delivered' : '8-14 mins'}
                 </p>
@@ -190,7 +188,7 @@ export default function OrderTrackingPage() {
               <div className="flex items-center gap-2">
                 <Bike className="w-4 h-4 text-black" />
                 <h4 className="font-bold text-xs uppercase tracking-wider text-black">
-                  Campus Runner Telemetry & Hostel Transit
+                  Courier Telemetry & Campus Transit
                 </h4>
               </div>
               <span className="text-[11px] font-mono text-noir-500">Live Campus Path</span>
@@ -215,25 +213,25 @@ export default function OrderTrackingPage() {
                   strokeDasharray="6 4"
                 />
 
-                {/* Canteen Node */}
+                {/* Cafe Kitchen Node */}
                 <g transform="translate(120, 180)">
                   <circle r="14" fill="#000000" />
                   <circle r="6" fill="#FFFFFF" />
                   <text y="-20" textAnchor="middle" fill="#000000" fontSize="10" fontFamily="monospace" fontWeight="bold">
-                    SAC Canteen Kitchen
+                    MILLET CAFE Kitchen
                   </text>
                 </g>
 
-                {/* Hostel Room Node */}
+                {/* Delivery Node */}
                 <g transform="translate(480, 140)">
                   <circle r="14" fill="#000000" />
                   <circle r="6" fill="#FFFFFF" />
                   <text y="-20" textAnchor="middle" fill="#000000" fontSize="10" fontFamily="monospace" fontWeight="bold">
-                    {order.delivery_address.room_number || 'Hostel Room'} ({order.delivery_address.hostel_name.split(' ')[0]})
+                    {order.delivery_address.room_number || 'Desk'} ({order.delivery_address.building_name?.split(' ')[0] || 'Drop'})
                   </text>
                 </g>
 
-                {/* Runner marker */}
+                {/* Courier marker */}
                 <g
                   transform={`translate(${
                     currentStageIndex <= 2
@@ -264,11 +262,11 @@ export default function OrderTrackingPage() {
               </svg>
 
               <div className="absolute bottom-3 left-3 bg-white/90 backdrop-blur-md px-3 py-1 rounded-full border border-noir-200 text-[10px] font-mono text-black">
-                {order.delivery_address.hostel_name} • {order.delivery_address.block_wing}
+                {order.delivery_address.building_name} • {order.delivery_address.block_wing}
               </div>
             </div>
 
-            {/* Runner Profile */}
+            {/* Courier Profile */}
             <div className="p-4 bg-noir-50 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative w-10 h-10 rounded-full overflow-hidden bg-noir-200 border border-noir-300">
@@ -277,14 +275,14 @@ export default function OrderTrackingPage() {
                       order.delivery_partner?.avatar_url ||
                       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
                     }
-                    alt="Hostel Runner"
+                    alt="Courier"
                     fill
                     className="object-cover"
                   />
                 </div>
                 <div>
                   <h4 className="font-bold text-xs text-black">
-                    {order.delivery_partner?.name || 'Vikas Kumar (Hostel Runner)'}
+                    {order.delivery_partner?.name || 'Vikas Kumar (Courier)'}
                   </h4>
                   <p className="text-[11px] text-noir-500 font-mono">
                     {order.delivery_partner?.vehicle_number || 'Campus Cycle #14'} • 4.95★
@@ -297,13 +295,13 @@ export default function OrderTrackingPage() {
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-noir-300 text-xs font-semibold text-black hover:bg-noir-100 transition-colors"
               >
                 <Phone className="w-3.5 h-3.5" />
-                <span>Call Runner</span>
+                <span>Call Courier</span>
               </a>
             </div>
           </div>
         </div>
 
-        {/* Right Column: Ordered Food & Hostel Room Details */}
+        {/* Right Column: Ordered Food & Delivery Details */}
         <div className="lg:col-span-5 space-y-6">
           {/* Order Details */}
           <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-4">
@@ -333,7 +331,7 @@ export default function OrderTrackingPage() {
                 <span className="font-mono text-black">{formatCurrency(order.subtotal_amount)}</span>
               </div>
               <div className="flex items-center justify-between text-noir-600">
-                <span>Hostel Runner Fee</span>
+                <span>Courier Fee</span>
                 <span className="font-mono text-black">
                   {order.delivery_fee === 0 ? 'FREE' : formatCurrency(order.delivery_fee)}
                 </span>
@@ -344,7 +342,7 @@ export default function OrderTrackingPage() {
               </div>
               {order.discount_amount > 0 && (
                 <div className="flex items-center justify-between text-emerald-600">
-                  <span>Student Coupon</span>
+                  <span>Discount</span>
                   <span className="font-mono">-{formatCurrency(order.discount_amount)}</span>
                 </div>
               )}
@@ -362,17 +360,17 @@ export default function OrderTrackingPage() {
             </div>
           </div>
 
-          {/* Destination Hostel Room */}
+          {/* Destination Details */}
           <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-3">
             <div className="flex items-center gap-2">
               <Building2 className="w-4 h-4 text-black" />
-              <h3 className="font-bold text-sm text-black">Delivery Hostel & Room</h3>
+              <h3 className="font-bold text-sm text-black">Delivery Location</h3>
             </div>
             <div className="text-xs space-y-1">
               <p className="font-bold text-black text-sm">
-                {order.delivery_address.room_number || 'Room'} • {order.delivery_address.floor || 'Floor'}
+                {order.delivery_address.room_number || 'Desk'} • {order.delivery_address.floor || 'Floor'}
               </p>
-              <p className="text-noir-800 font-semibold">{order.delivery_address.hostel_name}</p>
+              <p className="text-noir-800 font-semibold">{order.delivery_address.building_name}</p>
               <p className="text-noir-600">{order.delivery_address.block_wing}</p>
               {order.student_roll_no && (
                 <p className="text-noir-500 font-mono">Roll No: {order.student_roll_no}</p>
@@ -380,7 +378,7 @@ export default function OrderTrackingPage() {
             </div>
             {order.special_instructions && (
               <div className="pt-2 border-t border-noir-100 text-xs">
-                <span className="font-mono uppercase text-[10px] text-noir-400">Student Gate / Room Note:</span>
+                <span className="font-mono uppercase text-[10px] text-noir-400">Delivery Note:</span>
                 <p className="text-noir-700 italic mt-0.5">&ldquo;{order.special_instructions}&rdquo;</p>
               </div>
             )}

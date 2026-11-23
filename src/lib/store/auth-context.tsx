@@ -32,7 +32,7 @@ const DEFAULT_USERS: Record<UserRole, Profile> = {
   restaurant_owner: {
     id: 'user-owner-1',
     email: 'kitchen.manager@campus.edu',
-    full_name: 'Mr. Ramesh Chand (Canteen Manager)',
+    full_name: 'Mr. Ramesh Chand (Kitchen Manager)',
     phone: '+91 98200 88990',
     role: 'restaurant_owner',
     avatar_url: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=200&q=80',
@@ -41,7 +41,7 @@ const DEFAULT_USERS: Record<UserRole, Profile> = {
   delivery_partner: {
     id: 'user-delivery-1',
     email: 'vikas.runner@campus.edu',
-    full_name: 'Vikas Kumar (Hostel Runner)',
+    full_name: 'Vikas Kumar (Courier)',
     phone: '+91 98765 11223',
     role: 'delivery_partner',
     avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
@@ -50,7 +50,7 @@ const DEFAULT_USERS: Record<UserRole, Profile> = {
   admin: {
     id: 'user-admin-1',
     email: 'warden.dining@campus.edu',
-    full_name: 'Prof. S. K. Narayan (Hostel Warden / Admin)',
+    full_name: 'Prof. S. K. Narayan (Platform Admin)',
     phone: '+91 99999 00000',
     role: 'admin',
     avatar_url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80',
@@ -138,7 +138,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const addAddress = (addrData: Omit<Address, 'id' | 'user_id'>) => {
     const formattedStreet =
       addrData.street_address ||
-      `${addrData.room_number}, ${addrData.block_wing}, ${addrData.floor ? addrData.floor + ', ' : ''}${addrData.hostel_name}`;
+      `${addrData.room_number}, ${addrData.block_wing}, ${addrData.floor ? addrData.floor + ', ' : ''}${addrData.building_name}`;
 
     const newAddr: Address = {
       ...addrData,

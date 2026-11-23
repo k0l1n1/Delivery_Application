@@ -14,10 +14,10 @@ export interface Profile {
 export interface Address {
   id: string;
   user_id: string;
-  label: string; // 'Room Address' | 'Library' | 'Lab' | 'Hostel'
-  hostel_name: string; // e.g. "Boys Hostel 2 (Satpura)", "Girls Hostel 1 (Nilgiri)"
+  label: string; // 'Work Desk' | 'Library' | 'Lab' | 'Campus'
+  building_name: string; // e.g. "Central Campus Hub", "Academic Block A"
   block_wing: string; // e.g. "Block B", "Wing 3"
-  room_number: string; // e.g. "Room 304"
+  room_number: string; // e.g. "Room 304", "Desk 42"
   floor?: string; // e.g. "3rd Floor"
   street_address?: string; // formatted summary
   landmark?: string;

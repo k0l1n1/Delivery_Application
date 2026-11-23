@@ -78,12 +78,12 @@ function RestaurantListingContent() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Title & Search Bar */}
       <div className="space-y-4">
-        <span className="text-xs font-mono uppercase tracking-widest text-noir-500">Hostel Food Delivery</span>
+        <span className="text-xs font-mono uppercase tracking-widest text-noir-500">Millet Cafe Outlets</span>
         <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-black">
-          Campus Canteens & Kitchens
+          Kitchens & Outlets
         </h1>
         <p className="text-sm text-noir-600 max-w-xl">
-          Order midnight snacks, hot meals, and drinks delivered straight to your hostel floor.
+          Order organic grain bowls, warm wraps, and cold-pressed drinks delivered straight to your building.
         </p>
 
         {/* Search & Sort Controls */}
@@ -94,7 +94,7 @@ function RestaurantListingContent() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search canteen, Maggi, thali, biryani, coffee..."
+              placeholder="Search dishes, bowls, wraps, coffee, juices..."
               className="w-full pl-11 pr-4 py-3 rounded-full border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-sm text-black placeholder:text-noir-400 transition-all"
             />
             {searchQuery && (
@@ -117,7 +117,7 @@ function RestaurantListingContent() {
               >
                 <option value="popularity">Most Ordered</option>
                 <option value="rating">Highest Rated</option>
-                <option value="delivery_time">Fastest to Hostel</option>
+                <option value="delivery_time">Fastest Delivery</option>
               </select>
               <ArrowUpDown className="absolute right-3.5 w-3.5 h-3.5 text-noir-500 pointer-events-none" />
             </div>

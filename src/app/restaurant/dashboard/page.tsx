@@ -84,7 +84,7 @@ export default function RestaurantOwnerDashboard() {
             </h1>
           </div>
           <p className="text-xs text-noir-500 font-mono">
-            Canteen Incharge: {user?.full_name || 'Mr. Ramesh Chand'} • Serving All Hostels
+            Kitchen Incharge: {user?.full_name || 'Mr. Ramesh Chand'} • Serving All Campus Blocks
           </p>
         </div>
 
@@ -95,7 +95,7 @@ export default function RestaurantOwnerDashboard() {
               activeTab === 'orders' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Hostel Kitchen Tickets ({activeOrdersCount})
+            Kitchen Tickets ({activeOrdersCount})
           </button>
           <button
             onClick={() => setActiveTab('menu')}
@@ -103,7 +103,7 @@ export default function RestaurantOwnerDashboard() {
               activeTab === 'menu' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Canteen Menu Items ({items.length})
+            Menu Items ({items.length})
           </button>
           <button
             onClick={() => setActiveTab('analytics')}
@@ -111,7 +111,7 @@ export default function RestaurantOwnerDashboard() {
               activeTab === 'analytics' ? 'bg-black text-white' : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            Hostel Sales Analytics
+            Sales Analytics
           </button>
         </div>
       </div>
@@ -119,31 +119,31 @@ export default function RestaurantOwnerDashboard() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Today&apos;s Canteen Sales</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Today&apos;s Sales</p>
           <p className="text-2xl font-bold font-mono text-black">{formatCurrency(totalRevenue)}</p>
-          <p className="text-[11px] text-emerald-600 font-mono">Exam season demand high</p>
+          <p className="text-[11px] text-emerald-600 font-mono">Healthy organic meals</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Pending Hostel Orders</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Pending Orders</p>
           <p className="text-2xl font-bold font-mono text-black">{activeOrdersCount}</p>
           <p className="text-[11px] text-noir-500 font-mono">Awaiting cooking or dispatch</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
           <p className="text-xs font-mono uppercase text-noir-500">Average Prep Speed</p>
           <p className="text-2xl font-bold font-mono text-black">9 mins</p>
-          <p className="text-[11px] text-emerald-600 font-mono">Fast night turnaround</p>
+          <p className="text-[11px] text-emerald-600 font-mono">Fresh on-demand prep</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
           <p className="text-xs font-mono uppercase text-noir-500">Student Satisfaction</p>
-          <p className="text-2xl font-bold font-mono text-black">4.92 / 5.0</p>
-          <p className="text-[11px] text-noir-500 font-mono">840 student ratings</p>
+          <p className="text-2xl font-bold font-mono text-black">4.95 / 5.0</p>
+          <p className="text-[11px] text-noir-500 font-mono">980 member ratings</p>
         </div>
       </div>
 
       {/* Tab 1: Live Kitchen Tickets */}
       {activeTab === 'orders' && (
         <div className="space-y-4">
-          <h2 className="text-lg font-bold text-black">Active Orders for Hostel Room Dispatch</h2>
+          <h2 className="text-lg font-bold text-black">Active Orders for Dispatch</h2>
 
           <div className="space-y-4">
             {restaurantOrders.map((order) => (
@@ -175,10 +175,10 @@ export default function RestaurantOwnerDashboard() {
                       <Building2 className="w-4 h-4 text-black flex-shrink-0" />
                       <div>
                         <strong className="text-black">
-                          {order.delivery_address.room_number || 'Room'} • {order.delivery_address.floor || 'Floor'}
+                          {order.delivery_address.room_number || 'Desk'} • {order.delivery_address.floor || 'Floor'}
                         </strong>
                         <span className="text-noir-600 ml-1">
-                          ({order.delivery_address.hostel_name}, {order.delivery_address.block_wing})
+                          ({order.delivery_address.building_name}, {order.delivery_address.block_wing})
                         </span>
                       </div>
                     </div>
@@ -320,16 +320,16 @@ export default function RestaurantOwnerDashboard() {
       {activeTab === 'analytics' && (
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-3xl border border-noir-200 shadow-subtle space-y-4">
-            <h3 className="font-bold text-sm text-black">Hostel Delivery Volume by Block</h3>
+            <h3 className="font-bold text-sm text-black">Delivery Volume by Campus Zone</h3>
             <div className="h-48 flex items-end gap-4 pt-6 border-b border-noir-200">
               {[
-                { block: 'BH-1', height: '65%', amount: '₹8,500' },
-                { block: 'BH-2', height: '95%', amount: '₹14,200' },
-                { block: 'BH-3', height: '55%', amount: '₹7,100' },
-                { block: 'GH-1', height: '85%', amount: '₹11,400' },
-                { block: 'GH-2', height: '75%', amount: '₹9,800' },
-                { block: 'GH-3', height: '60%', amount: '₹7,800' },
-                { block: 'Library', height: '100%', amount: '₹16,500' },
+                { block: 'Block A', height: '65%', amount: '₹8,500' },
+                { block: 'Block B', height: '95%', amount: '₹14,200' },
+                { block: 'SAC Hub', height: '55%', amount: '₹7,100' },
+                { block: 'Library', height: '85%', amount: '₹11,400' },
+                { block: 'Tech Park', height: '75%', amount: '₹9,800' },
+                { block: 'Sports', height: '60%', amount: '₹7,800' },
+                { block: 'Admin', height: '100%', amount: '₹16,500' },
               ].map((bar) => (
                 <div key={bar.block} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
                   <div

@@ -8,10 +8,10 @@ import Footer from '@/components/layout/Footer';
 import Script from 'next/script';
 
 export const metadata: Metadata = {
-  title: 'NOIR – Campus & Hostel Food Delivery',
+  title: 'MILLET CAFE – Organic & Wholesome Food Delivery',
   description:
-    'Order late-night snacks, meals, and drinks delivered straight to your hostel room.',
-  keywords: ['hostel food delivery', 'campus food', 'night canteen', 'student food delivery'],
+    'Order fresh millet bowls, stone-ground ragi wraps, cold-pressed brews, and healthy snacks delivered across campus.',
+  keywords: ['millet cafe', 'campus food delivery', 'healthy food', 'ragi wraps', 'millet bowls'],
 };
 
 export default function RootLayout({

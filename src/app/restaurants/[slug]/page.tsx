@@ -87,12 +87,12 @@ export default function RestaurantDetailPage() {
             <div className="flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-noir-400" />
               <span>
-                {restaurant.delivery_time_min}-{restaurant.delivery_time_max} mins to room • Open till {restaurant.closing_time}
+                {restaurant.delivery_time_min}-{restaurant.delivery_time_max} mins • Open till {restaurant.closing_time}
               </span>
             </div>
             <div className="flex items-center gap-1.5">
               <Bike className="w-3.5 h-3.5 text-noir-400" />
-              <span>Hostel Runner Fee: {formatCurrency(restaurant.delivery_fee)}</span>
+              <span>Delivery Fee: {formatCurrency(restaurant.delivery_fee)}</span>
             </div>
           </div>
         </div>

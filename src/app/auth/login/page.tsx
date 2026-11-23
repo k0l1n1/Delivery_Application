@@ -77,10 +77,10 @@ export default function LoginPage() {
             onChange={(e) => setRole(e.target.value as UserRole)}
             className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs focus:outline-none focus:border-black bg-white"
           >
-            <option value="customer">Hostel Student</option>
-            <option value="restaurant_owner">Canteen Kitchen Staff</option>
-            <option value="delivery_partner">Hostel Runner</option>
-            <option value="admin">Hostel Warden / Dining Admin</option>
+            <option value="customer">Customer / Campus Member</option>
+            <option value="restaurant_owner">Cafe Kitchen Staff</option>
+            <option value="delivery_partner">Delivery Courier</option>
+            <option value="admin">Platform Administrator</option>
           </select>
         </div>
 

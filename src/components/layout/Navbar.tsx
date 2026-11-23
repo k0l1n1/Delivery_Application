@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/lib/store/cart-store';
 import { useAuth } from '@/lib/store/auth-context';
-import { HOSTEL_LIST } from '@/lib/data/mock-data';
+import { DELIVERY_LOCATIONS } from '@/lib/data/mock-data';
 import {
   ShoppingBag,
   Building2,
@@ -20,8 +20,8 @@ export default function Navbar() {
   const { itemCount } = useCart();
   const { user, logout } = useAuth();
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [currentHostel, setCurrentHostel] = useState(HOSTEL_LIST[1]); // Boys Hostel 2 (Aravali)
-  const [hostelSelectorOpen, setHostelSelectorOpen] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState(DELIVERY_LOCATIONS[0]);
+  const [locationSelectorOpen, setLocationSelectorOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-noir-200">
@@ -30,44 +30,43 @@ export default function Navbar() {
           {/* 1. Name & 2. Location that you choose */}
           <div className="flex items-center gap-4 sm:gap-6">
             <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
-              <span className="font-mono text-2xl font-black tracking-widest text-black">NOIR</span>
-              <span className="text-[10px] uppercase font-mono tracking-widest bg-black text-white px-1.5 py-0.5 rounded">
-                HOSTEL
+              <span className="font-mono text-xl sm:text-2xl font-black tracking-widest text-black">
+                MILLET CAFE
               </span>
             </Link>
 
-            {/* Hostel Location Selector */}
+            {/* Delivery Location Selector */}
             <div className="relative">
               <button
-                onClick={() => setHostelSelectorOpen(!hostelSelectorOpen)}
+                onClick={() => setLocationSelectorOpen(!locationSelectorOpen)}
                 className="flex items-center gap-2 px-3 py-1.5 text-xs text-noir-700 bg-noir-100 hover:bg-noir-200 rounded-full border border-noir-200 transition-colors"
               >
                 <Building2 className="w-3.5 h-3.5 text-black flex-shrink-0" />
                 <span className="font-medium text-black truncate max-w-[140px] sm:max-w-[220px]">
-                  {currentHostel}
+                  {currentLocation}
                 </span>
                 <ChevronDown className="w-3 h-3 text-noir-500 flex-shrink-0" />
               </button>
 
-              {hostelSelectorOpen && (
+              {locationSelectorOpen && (
                 <div className="absolute left-0 mt-2 w-72 bg-white border border-noir-200 rounded-2xl shadow-premium p-2 z-50">
                   <p className="text-[10px] font-mono text-noir-400 uppercase tracking-wider px-2 py-1">
-                    Select Your Delivery Hostel
+                    Select Delivery Location
                   </p>
                   <div className="max-h-60 overflow-y-auto space-y-1">
-                    {HOSTEL_LIST.map((h) => (
+                    {DELIVERY_LOCATIONS.map((loc) => (
                       <button
-                        key={h}
+                        key={loc}
                         onClick={() => {
-                          setCurrentHostel(h);
-                          setHostelSelectorOpen(false);
+                          setCurrentLocation(loc);
+                          setLocationSelectorOpen(false);
                         }}
                         className={`w-full text-left px-3 py-2 text-xs rounded-xl transition-colors flex items-center justify-between ${
-                          currentHostel === h ? 'bg-black text-white font-medium' : 'text-noir-800 hover:bg-noir-100'
+                          currentLocation === loc ? 'bg-black text-white font-medium' : 'text-noir-800 hover:bg-noir-100'
                         }`}
                       >
-                        <span className="truncate">{h}</span>
-                        {currentHostel === h && <span className="text-[9px] uppercase font-mono">Selected</span>}
+                        <span className="truncate">{loc}</span>
+                        {currentLocation === loc && <span className="text-[9px] uppercase font-mono">Selected</span>}
                       </button>
                     ))}
                   </div>
@@ -124,7 +123,7 @@ export default function Navbar() {
                         className="flex items-center gap-2.5 px-3 py-2 text-xs text-noir-800 hover:bg-noir-100 rounded-lg transition-colors"
                       >
                         <User className="w-4 h-4 text-noir-500" />
-                        Hostel Room & Profile
+                        Profile & Addresses
                       </Link>
                       <Link
                         href="/profile#orders"
@@ -132,7 +131,7 @@ export default function Navbar() {
                         className="flex items-center gap-2.5 px-3 py-2 text-xs text-noir-800 hover:bg-noir-100 rounded-lg transition-colors"
                       >
                         <Package className="w-4 h-4 text-noir-500" />
-                        Hostel Order History
+                        Order History
                       </Link>
                       <Link
                         href="/restaurant/dashboard"
@@ -140,7 +139,7 @@ export default function Navbar() {
                         className="flex items-center gap-2.5 px-3 py-2 text-xs text-noir-800 hover:bg-noir-100 rounded-lg transition-colors"
                       >
                         <Clock className="w-4 h-4 text-noir-500" />
-                        Canteen Kitchen Dashboard
+                        Kitchen Dashboard
                       </Link>
                       <Link
                         href="/delivery/dashboard"
@@ -148,7 +147,7 @@ export default function Navbar() {
                         className="flex items-center gap-2.5 px-3 py-2 text-xs text-noir-800 hover:bg-noir-100 rounded-lg transition-colors"
                       >
                         <Building2 className="w-4 h-4 text-noir-500" />
-                        Hostel Runner Dashboard
+                        Courier Dashboard
                       </Link>
                       <Link
                         href="/admin/dashboard"
@@ -156,7 +155,7 @@ export default function Navbar() {
                         className="flex items-center gap-2.5 px-3 py-2 text-xs text-noir-800 hover:bg-noir-100 rounded-lg transition-colors"
                       >
                         <Settings className="w-4 h-4 text-noir-500" />
-                        Campus Dining Admin
+                        Admin Dashboard
                       </Link>
                     </div>
 

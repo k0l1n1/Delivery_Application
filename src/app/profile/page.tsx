@@ -7,7 +7,7 @@ import { useAuth } from '@/lib/store/auth-context';
 import { useOrders } from '@/lib/store/order-store';
 import { useCart } from '@/lib/store/cart-store';
 import { formatCurrency, formatDate } from '@/lib/utils';
-import { MOCK_RESTAURANTS, HOSTEL_LIST } from '@/lib/data/mock-data';
+import { MOCK_RESTAURANTS, DELIVERY_LOCATIONS } from '@/lib/data/mock-data';
 import {
   Building2,
   Package,
@@ -18,7 +18,6 @@ import {
   ArrowRight,
   RotateCcw,
   Check,
-  GraduationCap,
 } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -27,9 +26,9 @@ export default function ProfilePage() {
   const { orders } = useOrders();
   const { addItem, clearCart } = useCart();
 
-  const [activeTab, setActiveTab] = useState<'orders' | 'rooms' | 'favorites'>('orders');
-  const [isAddRoomOpen, setIsAddRoomOpen] = useState(false);
-  const [newHostel, setNewHostel] = useState(HOSTEL_LIST[0]);
+  const [activeTab, setActiveTab] = useState<'orders' | 'addresses' | 'favorites'>('orders');
+  const [isAddAddressOpen, setIsAddAddressOpen] = useState(false);
+  const [newBuilding, setNewBuilding] = useState(DELIVERY_LOCATIONS[0]);
   const [newBlock, setNewBlock] = useState('Block B');
   const [newFloor, setNewFloor] = useState('2nd Floor');
   const [newRoom, setNewRoom] = useState('');
@@ -38,32 +37,32 @@ export default function ProfilePage() {
   if (!user) {
     return (
       <div className="max-w-xl mx-auto py-24 px-4 text-center space-y-4">
-        <h2 className="text-xl font-bold">Please sign in with your student credentials</h2>
+        <h2 className="text-xl font-bold">Please sign in to view your profile</h2>
         <Link
           href="/auth/login"
           className="inline-block px-6 py-2.5 rounded-full bg-black text-white text-xs font-semibold"
         >
-          Student Sign In
+          Sign In
         </Link>
       </div>
     );
   }
 
-  const handleCreateRoom = (e: React.FormEvent) => {
+  const handleCreateAddress = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newRoom.trim()) return;
 
     addAddress({
-      label: 'Hostel Room',
-      hostel_name: newHostel,
+      label: 'Campus Desk',
+      building_name: newBuilding,
       block_wing: newBlock,
       floor: newFloor,
-      room_number: newRoom.startsWith('Room') ? newRoom : `Room ${newRoom}`,
+      room_number: newRoom.startsWith('Room') || newRoom.startsWith('Desk') ? newRoom : `Desk/Room ${newRoom}`,
       landmark: newLandmark,
       is_default: false,
     });
 
-    setIsAddRoomOpen(false);
+    setIsAddAddressOpen(false);
     setNewRoom('');
     setNewLandmark('');
   };
@@ -79,7 +78,7 @@ export default function ProfilePage() {
         slug: 'item',
         description: '',
         price: item.unit_price,
-        image_url: 'https://images.unsplash.com/photo-1612927601601-6638404737ce?auto=format&fit=crop&w=400&q=80',
+        image_url: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80',
         is_veg: true,
         is_available: true,
       };
@@ -100,7 +99,7 @@ export default function ProfilePage() {
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-extrabold text-black">{user.full_name}</h1>
               <span className="text-[10px] font-mono uppercase bg-noir-100 text-black px-2 py-0.5 rounded-full border border-noir-300">
-                {user.roll_number || 'Hostel Student'}
+                {user.roll_number || 'Campus Member'}
               </span>
             </div>
             <p className="text-xs text-noir-500 font-mono">{user.email} • {user.phone}</p>
@@ -125,16 +124,16 @@ export default function ProfilePage() {
           }`}
         >
           <Package className="w-4 h-4" />
-          <span>Hostel Orders ({orders.length})</span>
+          <span>Order History ({orders.length})</span>
         </button>
         <button
-          onClick={() => setActiveTab('rooms')}
+          onClick={() => setActiveTab('addresses')}
           className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-semibold transition-colors ${
-            activeTab === 'rooms' ? 'bg-black text-white' : 'text-noir-600 hover:bg-noir-100'
+            activeTab === 'addresses' ? 'bg-black text-white' : 'text-noir-600 hover:bg-noir-100'
           }`}
         >
           <Building2 className="w-4 h-4" />
-          <span>Saved Hostel Rooms ({addresses.length})</span>
+          <span>Saved Addresses ({addresses.length})</span>
         </button>
         <button
           onClick={() => setActiveTab('favorites')}
@@ -143,7 +142,7 @@ export default function ProfilePage() {
           }`}
         >
           <Heart className="w-4 h-4" />
-          <span>Favorite Canteens</span>
+          <span>Favorite Outlets</span>
         </button>
       </div>
 
@@ -174,7 +173,7 @@ export default function ProfilePage() {
 
                   <p className="text-sm font-semibold text-black">{order.restaurant_name}</p>
                   <p className="text-xs text-noir-600">
-                    Delivered to: <strong className="text-black">{order.delivery_address.room_number || 'Room'}</strong>, {order.delivery_address.hostel_name}
+                    Delivered to: <strong className="text-black">{order.delivery_address.room_number || 'Desk'}</strong>, {order.delivery_address.building_name}
                   </p>
                   <p className="text-xs text-noir-500 font-mono">
                     {order.items.map((i) => `${i.quantity}x ${i.food_name}`).join(', ')}
@@ -196,7 +195,7 @@ export default function ProfilePage() {
                     href={`/orders/${order.id}`}
                     className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-black text-white hover:bg-noir-800 text-xs font-semibold transition-colors"
                   >
-                    <span>Track Runner</span>
+                    <span>Track Order</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -204,23 +203,23 @@ export default function ProfilePage() {
             ))
           ) : (
             <div className="py-16 text-center bg-noir-50 rounded-3xl border border-noir-200 space-y-2">
-              <p className="font-bold text-black">No past hostel orders found</p>
-              <p className="text-xs text-noir-500">Your late-night study orders and mess upgrades will appear here.</p>
+              <p className="font-bold text-black">No past orders found</p>
+              <p className="text-xs text-noir-500">Your recent food orders will appear here.</p>
             </div>
           )}
         </div>
       )}
 
-      {activeTab === 'rooms' && (
+      {activeTab === 'addresses' && (
         <div className="space-y-6">
           <div className="flex justify-between items-center">
-            <h3 className="font-bold text-sm text-black">Your Registered Hostel Rooms</h3>
+            <h3 className="font-bold text-sm text-black">Your Registered Addresses</h3>
             <button
-              onClick={() => setIsAddRoomOpen(true)}
+              onClick={() => setIsAddAddressOpen(true)}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-black text-white hover:bg-noir-800 text-xs font-semibold transition-colors"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Add Room</span>
+              <span>Add Location</span>
             </button>
           </div>
 
@@ -237,11 +236,11 @@ export default function ProfilePage() {
                     </span>
                     {addr.is_default && (
                       <span className="text-[10px] font-mono uppercase bg-noir-100 text-black px-2 py-0.5 rounded-full border border-noir-300">
-                        Primary Room
+                        Primary Address
                       </span>
                     )}
                   </div>
-                  <p className="text-xs font-semibold text-black">{addr.hostel_name}</p>
+                  <p className="text-xs font-semibold text-black">{addr.building_name}</p>
                   <p className="text-xs text-noir-600 font-mono">
                     {addr.block_wing} • {addr.floor}
                   </p>
@@ -254,7 +253,7 @@ export default function ProfilePage() {
                       onClick={() => setDefaultAddress(addr.id)}
                       className="text-xs text-noir-600 hover:text-black font-semibold font-mono"
                     >
-                      Set as Default Room
+                      Set as Default
                     </button>
                   ) : (
                     <span className="text-xs text-emerald-600 font-mono flex items-center gap-1">
@@ -289,7 +288,7 @@ export default function ProfilePage() {
               <div className="flex-1 space-y-1">
                 <h4 className="font-bold text-sm">{r.name}</h4>
                 <p className="text-xs text-noir-500">{r.cuisines.join(' • ')}</p>
-                <p className="text-xs font-mono font-bold">{r.rating}★ ({r.rating_count} students)</p>
+                <p className="text-xs font-mono font-bold">{r.rating}★ ({r.rating_count} reviews)</p>
               </div>
               <Link
                 href={`/restaurants/${r.slug}`}
@@ -302,22 +301,22 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Add Room Modal */}
-      {isAddRoomOpen && (
+      {/* Add Address Modal */}
+      {isAddAddressOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 border border-noir-200 shadow-2xl space-y-4">
-            <h3 className="font-bold text-base text-black">Register Hostel Room</h3>
-            <form onSubmit={handleCreateRoom} className="space-y-3">
+            <h3 className="font-bold text-base text-black">Register Delivery Location</h3>
+            <form onSubmit={handleCreateAddress} className="space-y-3">
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Hostel</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Location / Building</label>
                 <select
-                  value={newHostel}
-                  onChange={(e) => setNewHostel(e.target.value)}
+                  value={newBuilding}
+                  onChange={(e) => setNewBuilding(e.target.value)}
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs bg-white"
                 >
-                  {HOSTEL_LIST.map((h) => (
-                    <option key={h} value={h}>
-                      {h}
+                  {DELIVERY_LOCATIONS.map((b) => (
+                    <option key={b} value={b}>
+                      {b}
                     </option>
                   ))}
                 </select>
@@ -347,18 +346,18 @@ export default function ProfilePage() {
                 </div>
               </div>
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Room Number</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Desk / Room Number</label>
                 <input
                   type="text"
                   required
                   value={newRoom}
                   onChange={(e) => setNewRoom(e.target.value)}
-                  placeholder="e.g. 304"
+                  placeholder="e.g. Desk 42, Room 304"
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
                 />
               </div>
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Hostel Landmark</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Landmark</label>
                 <input
                   type="text"
                   value={newLandmark}
@@ -370,7 +369,7 @@ export default function ProfilePage() {
               <div className="flex gap-2 pt-2">
                 <button
                   type="button"
-                  onClick={() => setIsAddRoomOpen(false)}
+                  onClick={() => setIsAddAddressOpen(false)}
                   className="flex-1 py-2.5 rounded-full border border-noir-300 text-xs font-semibold"
                 >
                   Cancel
@@ -379,7 +378,7 @@ export default function ProfilePage() {
                   type="submit"
                   className="flex-1 py-2.5 rounded-full bg-black text-white text-xs font-semibold hover:bg-noir-800"
                 >
-                  Save Room
+                  Save Location
                 </button>
               </div>
             </form>

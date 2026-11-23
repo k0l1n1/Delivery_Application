@@ -36,7 +36,7 @@ export default function AdminDashboard() {
     const created: Coupon = {
       id: `cp-${Date.now()}`,
       code: newCode.toUpperCase().trim(),
-      description: newDesc || 'Special hostel student discount',
+      description: newDesc || 'Special campus student discount',
       discount_type: discountType,
       discount_value: discountType === 'percentage' ? val : Math.round(val * 100),
       min_order_amount: 10000,
@@ -64,11 +64,11 @@ export default function AdminDashboard() {
           <div className="flex items-center gap-2">
             <ShieldCheck className="w-6 h-6 text-black" />
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black">
-              Hostel Dining & Canteen Administration
+              Dining & Platform Administration
             </h1>
           </div>
           <p className="text-xs text-noir-500 font-mono">
-            Hostel Warden & Dining Incharge: {user?.full_name || 'Prof. S. K. Narayan'}
+            Platform Admin: {user?.full_name || 'Prof. S. K. Narayan'}
           </p>
         </div>
 
@@ -111,22 +111,22 @@ export default function AdminDashboard() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Gross Canteen Volume</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Gross Volume</p>
           <p className="text-2xl font-bold font-mono text-black">{formatCurrency(totalRevenue)}</p>
-          <p className="text-[11px] text-emerald-600 font-mono">All campus hostels</p>
+          <p className="text-[11px] text-emerald-600 font-mono">All campus blocks</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
           <p className="text-xs font-mono uppercase text-noir-500">Campus Outlets</p>
           <p className="text-2xl font-bold font-mono text-black">{MOCK_RESTAURANTS.length}</p>
-          <p className="text-[11px] text-noir-500 font-mono">SAC Canteens & Mess Plus</p>
+          <p className="text-[11px] text-noir-500 font-mono">MILLET CAFE Kitchens</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Active Hostel Runners</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Active Delivery Couriers</p>
           <p className="text-2xl font-bold font-mono text-black">12</p>
           <p className="text-[11px] text-noir-500 font-mono">Covering all wings</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Total Room Deliveries</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Total Deliveries</p>
           <p className="text-2xl font-bold font-mono text-black">{orders.length}</p>
           <p className="text-[11px] text-emerald-600 font-mono">100% successful drop-offs</p>
         </div>
@@ -136,14 +136,14 @@ export default function AdminDashboard() {
       {activeTab === 'overview' && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white p-6 rounded-3xl border border-noir-200 shadow-subtle space-y-4">
-            <h3 className="font-bold text-sm text-black">Recent Hostel Orders</h3>
+            <h3 className="font-bold text-sm text-black">Recent Orders</h3>
             <div className="divide-y divide-noir-100">
               {orders.slice(0, 5).map((o) => (
                 <div key={o.id} className="py-2.5 flex items-center justify-between text-xs">
                   <div>
                     <span className="font-mono font-bold text-black">#{o.order_number}</span>
                     <p className="text-noir-500">
-                      {o.customer_name} • {o.delivery_address.room_number}, {o.delivery_address.hostel_name}
+                      {o.customer_name} • {o.delivery_address.room_number}, {o.delivery_address.building_name}
                     </p>
                   </div>
                   <div className="text-right">
@@ -156,22 +156,22 @@ export default function AdminDashboard() {
           </div>
 
           <div className="bg-white p-6 rounded-3xl border border-noir-200 shadow-subtle space-y-4">
-            <h3 className="font-bold text-sm text-black">Hostel Hygiene & Policy Compliance</h3>
+            <h3 className="font-bold text-sm text-black">Quality & Policy Compliance</h3>
             <div className="space-y-3 text-xs">
               <div className="flex items-center justify-between p-3 rounded-xl bg-noir-50 border border-noir-200">
-                <span>Night Delivery Hours</span>
-                <span className="font-mono text-emerald-700 font-bold">ACTIVE (Till 4:00 AM)</span>
+                <span>Campus Delivery Hours</span>
+                <span className="font-mono text-emerald-700 font-bold">ACTIVE (7:00 AM – 11:00 PM)</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-noir-50 border border-noir-200">
-                <span>Girls Hostel Security Protocol</span>
-                <span className="font-mono text-emerald-700 font-bold">VERIFIED (Designated Gate Handover)</span>
+                <span>Campus Security Protocol</span>
+                <span className="font-mono text-emerald-700 font-bold">VERIFIED (Designated Drop Zones)</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-noir-50 border border-noir-200">
-                <span>Mess Food Quality Audit</span>
+                <span>Organic Food Quality Audit</span>
                 <span className="font-mono text-emerald-700 font-bold">PASS (A+ RATING)</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-noir-50 border border-noir-200">
-                <span>Student UPI Security</span>
+                <span>Customer UPI Security</span>
                 <span className="font-mono text-emerald-700 font-bold">256-BIT ENCRYPTED</span>
               </div>
             </div>
@@ -265,8 +265,8 @@ export default function AdminDashboard() {
                 <tr>
                   <th className="p-4">Order Ref</th>
                   <th className="p-4">Student</th>
-                  <th className="p-4">Hostel & Room</th>
-                  <th className="p-4">Canteen</th>
+                  <th className="p-4">Location & Desk</th>
+                  <th className="p-4">Outlet</th>
                   <th className="p-4">Amount</th>
                   <th className="p-4">Status</th>
                   <th className="p-4">Time</th>
@@ -280,7 +280,7 @@ export default function AdminDashboard() {
                       {o.customer_name} ({o.student_roll_no || 'Student'})
                     </td>
                     <td className="p-4 font-semibold text-black">
-                      {o.delivery_address.room_number || 'Room'}, {o.delivery_address.hostel_name}
+                      {o.delivery_address.room_number || 'Desk'}, {o.delivery_address.building_name}
                     </td>
                     <td className="p-4">{o.restaurant_name}</td>
                     <td className="p-4 font-mono font-bold">{formatCurrency(o.total_amount)}</td>

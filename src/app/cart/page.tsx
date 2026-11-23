@@ -11,18 +11,17 @@ import {
   Minus,
   ArrowRight,
   ShoppingBag,
+  Building2,
   Tag,
-  ShieldCheck,
-  Percent,
   Check,
   X,
-  Building2,
 } from 'lucide-react';
 
 export default function CartPage() {
   const {
     items,
     restaurantName,
+    itemCount,
     subtotal,
     deliveryFee,
     taxAmount,
@@ -37,17 +36,16 @@ export default function CartPage() {
   } = useCart();
 
   const [couponInput, setCouponInput] = useState('');
-  const [couponError, setCouponError] = useState('');
-  const [couponSuccess, setCouponSuccess] = useState('');
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [couponSuccess, setCouponSuccess] = useState<string | null>(null);
 
   const handleApplyCoupon = (e: React.FormEvent) => {
     e.preventDefault();
-    setCouponError('');
-    setCouponSuccess('');
-
+    setCouponError(null);
+    setCouponSuccess(null);
     if (!couponInput.trim()) return;
 
-    const res = applyCoupon(couponInput);
+    const res = applyCoupon(couponInput.trim());
     if (res.success) {
       setCouponSuccess(res.message);
       setCouponInput('');
@@ -58,21 +56,21 @@ export default function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-28 text-center space-y-6">
-        <div className="w-20 h-20 rounded-full bg-noir-100 border border-noir-200 flex items-center justify-center mx-auto text-noir-400">
-          <ShoppingBag className="w-8 h-8" />
+      <div className="max-w-xl mx-auto py-24 px-4 text-center space-y-6">
+        <div className="w-20 h-20 mx-auto rounded-full bg-noir-100 flex items-center justify-center text-noir-400">
+          <ShoppingBag className="w-10 h-10" />
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight text-black">Your Food Bag is Empty</h1>
+          <h2 className="text-2xl font-extrabold tracking-tight text-black">Your Food Bag is Empty</h2>
           <p className="text-xs text-noir-500 max-w-sm mx-auto">
-            Order midnight cheese Maggi, kathi rolls, biryani pots, and iced coffee delivered straight to your room.
+            Browse our wholesome menu of organic millet bowls, ragi wraps, bajra burgers, and fresh cold brews.
           </p>
         </div>
         <Link
           href="/restaurants"
           className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-black text-white hover:bg-noir-800 transition-colors text-xs font-semibold tracking-wide"
         >
-          <span>Browse Canteens</span>
+          <span>Browse Food Menu</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </div>
@@ -83,7 +81,7 @@ export default function CartPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <span className="text-xs font-mono uppercase tracking-widest text-noir-500">Hostel Order Bag</span>
+          <span className="text-xs font-mono uppercase tracking-widest text-noir-500">Food Order Bag</span>
           <h1 className="text-3xl font-extrabold tracking-tight text-black mt-1">Review Your Meal</h1>
           {restaurantName && (
             <p className="text-xs text-noir-600 mt-1">
@@ -119,43 +117,49 @@ export default function CartPage() {
                       className="text-noir-400 hover:text-red-600 p-1 transition-colors"
                       aria-label="Remove item"
                     >
-                      <Trash2 className="w-3.5 h-3.5" />
+                      <Trash2 className="w-4 h-4" />
                     </button>
                   </div>
 
-                  {item.selected_customizations && item.selected_customizations.length > 0 && (
-                    <div className="flex flex-wrap gap-1 py-1">
-                      {item.selected_customizations.map((c, idx) => (
+                  <p className="text-xs font-mono text-noir-500">{formatCurrency(item.unit_price)} each</p>
+
+                  {item.selected_customizations.length > 0 && (
+                    <div className="text-[11px] text-noir-500 pt-1 space-y-0.5">
+                      {item.selected_customizations.map((c) => (
                         <span
-                          key={idx}
-                          className="text-[10px] bg-noir-100 text-noir-700 px-2 py-0.5 rounded font-mono"
+                          key={c.option_id}
+                          className="inline-block bg-noir-100 text-noir-700 px-2 py-0.5 rounded-full mr-1.5 text-[10px]"
                         >
-                          {c.option_name}
+                          +{c.option_name} ({formatCurrency(c.price_in_paise)})
                         </span>
                       ))}
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between pt-2">
-                    <span className="font-mono font-bold text-sm text-black">
-                      {formatCurrency(item.total_price)}
-                    </span>
-
-                    <div className="flex items-center gap-3 bg-noir-100 border border-noir-200 rounded-full px-2.5 py-0.5">
+                  <div className="pt-2 flex items-center justify-between">
+                    <div className="flex items-center gap-2 border border-noir-200 rounded-full px-2 py-1 bg-white">
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="text-noir-600 hover:text-black p-0.5"
+                        className="p-1 hover:bg-noir-100 rounded-full transition-colors text-black"
+                        aria-label="Decrease quantity"
                       >
                         <Minus className="w-3 h-3" />
                       </button>
-                      <span className="text-xs font-mono font-bold w-4 text-center">{item.quantity}</span>
+                      <span className="font-mono text-xs font-bold w-5 text-center text-black">
+                        {item.quantity}
+                      </span>
                       <button
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="text-noir-600 hover:text-black p-0.5"
+                        className="p-1 hover:bg-noir-100 rounded-full transition-colors text-black"
+                        aria-label="Increase quantity"
                       >
                         <Plus className="w-3 h-3" />
                       </button>
                     </div>
+
+                    <span className="font-mono font-bold text-sm text-black">
+                      {formatCurrency(item.total_price)}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -165,7 +169,7 @@ export default function CartPage() {
           <div className="p-4 rounded-2xl bg-noir-50 border border-noir-200 text-xs text-noir-600 flex items-center gap-2">
             <Building2 className="w-4 h-4 text-black flex-shrink-0" />
             <span>
-              Direct hostel room delivery. Free runner tip on orders above ₹150.
+              Direct campus doorstep delivery. Standard cafe delivery fee applies.
             </span>
           </div>
         </div>
@@ -175,7 +179,7 @@ export default function CartPage() {
           <div className="bg-white rounded-3xl border border-noir-200 p-6 shadow-subtle space-y-4">
             <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-black">
               <Tag className="w-4 h-4" />
-              <span>Student Coupons</span>
+              <span>Coupons & Offers</span>
             </div>
 
             {appliedCoupon ? (
@@ -203,7 +207,7 @@ export default function CartPage() {
                     type="text"
                     value={couponInput}
                     onChange={(e) => setCouponInput(e.target.value)}
-                    placeholder="e.g. EXAMNIGHT"
+                    placeholder="Enter coupon code"
                     className="flex-1 px-4 py-2.5 rounded-full border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-xs font-mono uppercase text-black"
                   />
                   <button
@@ -235,7 +239,7 @@ export default function CartPage() {
               </div>
 
               <div className="flex items-center justify-between text-noir-600">
-                <span>Hostel Floor Runner Tip</span>
+                <span>Delivery Courier Fee</span>
                 <span className="font-mono text-black">
                   {deliveryFee === 0 ? (
                     <span className="text-emerald-600 font-bold uppercase text-[10px]">Free</span>
@@ -246,23 +250,20 @@ export default function CartPage() {
               </div>
 
               <div className="flex items-center justify-between text-noir-600">
-                <span>Canteen GST (5%)</span>
+                <span>GST (5%)</span>
                 <span className="font-mono text-black">{formatCurrency(taxAmount)}</span>
               </div>
 
               {discountAmount > 0 && (
-                <div className="flex items-center justify-between text-emerald-700 font-medium">
-                  <span className="flex items-center gap-1">
-                    <Percent className="w-3 h-3" />
-                    Coupon ({appliedCoupon?.code})
-                  </span>
+                <div className="flex items-center justify-between text-emerald-600 font-medium">
+                  <span>Coupon Discount</span>
                   <span className="font-mono">-{formatCurrency(discountAmount)}</span>
                 </div>
               )}
 
-              <div className="pt-3 border-t border-noir-200 flex items-center justify-between text-sm font-bold text-black">
-                <span>Total to Pay</span>
-                <span className="font-mono text-base">{formatCurrency(totalAmount)}</span>
+              <div className="pt-3 border-t border-noir-200 flex items-center justify-between text-base font-bold text-black">
+                <span>Grand Total</span>
+                <span className="font-mono">{formatCurrency(totalAmount)}</span>
               </div>
             </div>
 
@@ -270,7 +271,7 @@ export default function CartPage() {
               href="/checkout"
               className="w-full py-4 rounded-full bg-black text-white hover:bg-noir-800 transition-colors text-xs font-semibold tracking-wide flex items-center justify-center gap-2 shadow-sm"
             >
-              <span>Proceed to Room Address</span>
+              <span>Proceed to Checkout</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
