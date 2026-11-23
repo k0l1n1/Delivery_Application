@@ -6,7 +6,6 @@ import FoodItemCard from '@/components/restaurant/FoodItemCard';
 import {
   Search,
   X,
-  Tag,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -146,22 +145,6 @@ export default function HomePage() {
             </button>
           ))}
         </div>
-      </div>
-
-      {/* Discounts Notice */}
-      <div className="p-3.5 rounded-2xl bg-noir-50 border border-noir-200 flex items-center justify-between text-xs text-noir-600">
-        <div className="flex items-center gap-2.5">
-          <div className="p-1.5 rounded-lg bg-noir-200 text-black">
-            <Tag className="w-3.5 h-3.5" />
-          </div>
-          <div>
-            <span className="font-bold text-black">No current discounts</span>
-            <p className="text-[11px] text-noir-500">Standard menu pricing applies across all items</p>
-          </div>
-        </div>
-        <span className="font-mono text-[10px] uppercase bg-white px-2.5 py-1 rounded-full border border-noir-200 text-noir-500">
-          Standard Rates
-        </span>
       </div>
 
       {/* Main Food Items Grid */}
