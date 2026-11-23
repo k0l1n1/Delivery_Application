@@ -93,24 +93,24 @@ export default function HomePage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       {/* Header & Search Bar */}
       <div className="space-y-4">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black">
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black dark:text-white transition-colors">
           Food Menu
         </h1>
 
         {/* Search Bar */}
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-noir-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-noir-400 dark:text-noir-500" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search menu..."
-            className="w-full pl-11 pr-10 py-3 rounded-full border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-sm text-black placeholder:text-noir-400 transition-all shadow-subtle"
+            className="w-full pl-11 pr-10 py-3 rounded-full border border-noir-300 dark:border-noir-800 bg-noir-50 dark:bg-noir-900 focus:bg-white dark:focus:bg-black focus:outline-none focus:border-black dark:focus:border-white text-sm text-black dark:text-white placeholder:text-noir-400 dark:placeholder:text-noir-500 transition-all shadow-subtle"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery('')}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-noir-400 hover:text-black"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-noir-400 hover:text-black dark:hover:text-white"
             >
               <X className="w-4 h-4" />
             </button>
@@ -119,14 +119,14 @@ export default function HomePage() {
       </div>
 
       {/* Food Categories Strip */}
-      <div className="border-b border-noir-200 pb-3">
+      <div className="border-b border-noir-200 dark:border-noir-800 pb-3 transition-colors">
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
           <button
             onClick={() => setSelectedCategory('all')}
             className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
               selectedCategory === 'all'
-                ? 'bg-black text-white'
-                : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
+                ? 'bg-black text-white dark:bg-white dark:text-black'
+                : 'bg-noir-100 text-noir-700 hover:bg-noir-200 dark:bg-noir-900 dark:text-noir-300 dark:hover:bg-noir-800'
             }`}
           >
             All
@@ -137,8 +137,8 @@ export default function HomePage() {
               onClick={() => setSelectedCategory(cat.slug)}
               className={`px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-colors ${
                 selectedCategory === cat.slug
-                  ? 'bg-black text-white'
-                  : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
+                  ? 'bg-black text-white dark:bg-white dark:text-black'
+                  : 'bg-noir-100 text-noir-700 hover:bg-noir-200 dark:bg-noir-900 dark:text-noir-300 dark:hover:bg-noir-800'
               }`}
             >
               {cat.name}
@@ -149,10 +149,10 @@ export default function HomePage() {
 
       {/* Main Food Items Grid */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between text-xs font-mono text-noir-500">
+        <div className="flex items-center justify-between text-xs font-mono text-noir-500 dark:text-noir-400">
           <span>{filteredItems.length} Dishes Available for Delivery</span>
           {selectedCategory !== 'all' && (
-            <span className="text-black font-semibold capitalize">Filter: {selectedCategory.replace('-', ' ')}</span>
+            <span className="text-black dark:text-white font-semibold capitalize">Filter: {selectedCategory.replace('-', ' ')}</span>
           )}
         </div>
 
@@ -163,14 +163,14 @@ export default function HomePage() {
             ))}
           </div>
         ) : (
-          <div className="py-20 text-center bg-noir-50 rounded-3xl border border-noir-200 space-y-3">
-            <p className="font-bold text-black">No food items found matching your filter.</p>
+          <div className="py-20 text-center bg-noir-50 dark:bg-noir-900 rounded-3xl border border-noir-200 dark:border-noir-800 space-y-3">
+            <p className="font-bold text-black dark:text-white">No food items found matching your filter.</p>
             <button
               onClick={() => {
                 setSearchQuery('');
                 setSelectedCategory('all');
               }}
-              className="px-5 py-2 rounded-full bg-black text-white text-xs font-semibold"
+              className="px-5 py-2 rounded-full bg-black text-white dark:bg-white dark:text-black text-xs font-semibold"
             >
               Reset Filters
             </button>

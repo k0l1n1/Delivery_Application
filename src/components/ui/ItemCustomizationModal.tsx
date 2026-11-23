@@ -95,9 +95,9 @@ export default function ItemCustomizationModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-noir-200 shadow-2xl flex flex-col">
+      <div className="bg-white dark:bg-noir-900 rounded-3xl max-w-lg w-full max-h-[90vh] overflow-y-auto border border-noir-200 dark:border-noir-800 shadow-2xl flex flex-col">
         {/* Header */}
-        <div className="relative h-48 w-full bg-noir-100 overflow-hidden">
+        <div className="relative h-48 w-full bg-noir-100 dark:bg-noir-800 overflow-hidden">
           <Image
             src={item.image_url}
             alt={item.name}
@@ -219,15 +219,15 @@ export default function ItemCustomizationModal({
         </div>
 
         {/* Footer with Add Button */}
-        <div className="p-4 border-t border-noir-200 bg-noir-50/50 flex items-center justify-between gap-4">
+        <div className="p-4 border-t border-noir-200 dark:border-noir-800 bg-noir-50/50 dark:bg-noir-950/50 flex items-center justify-between gap-4">
           <div>
-            <p className="text-[11px] font-mono text-noir-500 uppercase">Item Total</p>
-            <p className="text-lg font-bold text-black font-mono">{formatCurrency(totalPrice)}</p>
+            <p className="text-[11px] font-mono text-noir-500 dark:text-noir-400 uppercase">Item Total</p>
+            <p className="text-lg font-bold text-black dark:text-white font-mono">{formatCurrency(totalPrice)}</p>
           </div>
 
           <button
             onClick={handleConfirm}
-            className="flex-1 max-w-xs py-3 px-6 rounded-full bg-black text-white hover:bg-noir-800 transition-colors text-xs font-semibold tracking-wide flex items-center justify-center gap-2 shadow-sm"
+            className="flex-1 max-w-xs py-3 px-6 rounded-full bg-black text-white dark:bg-white dark:text-black hover:bg-noir-800 dark:hover:bg-noir-200 transition-colors text-xs font-semibold tracking-wide flex items-center justify-center gap-2 shadow-sm"
           >
             Add to Bag • {formatCurrency(totalPrice)}
           </button>

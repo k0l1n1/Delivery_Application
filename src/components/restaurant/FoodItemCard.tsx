@@ -44,7 +44,7 @@ export default function FoodItemCard({ item, restaurant }: FoodItemCardProps) {
 
   return (
     <>
-      <div className="bg-white rounded-2xl border border-noir-200 p-4 flex gap-4 hover:border-black transition-smooth shadow-subtle hover:shadow-premium group">
+      <div className="bg-white dark:bg-noir-900 rounded-2xl border border-noir-200 dark:border-noir-800 p-4 flex gap-4 hover:border-black dark:hover:border-noir-500 transition-smooth shadow-subtle dark:shadow-none hover:shadow-premium group">
         {/* Left Information */}
         <div className="flex-1 flex flex-col justify-between space-y-2">
           <div>
@@ -59,27 +59,27 @@ export default function FoodItemCard({ item, restaurant }: FoodItemCardProps) {
               </span>
 
               {item.is_popular && (
-                <span className="text-[10px] font-mono uppercase tracking-wider bg-black text-white px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-mono uppercase tracking-wider bg-black text-white dark:bg-white dark:text-black px-2 py-0.5 rounded-full">
                   Signature
                 </span>
               )}
             </div>
 
-            <h4 className="font-bold text-sm text-black group-hover:text-noir-800 transition-colors">
+            <h4 className="font-bold text-sm text-black dark:text-white group-hover:text-noir-800 dark:group-hover:text-noir-200 transition-colors">
               {item.name}
             </h4>
 
-            <p className="text-xs text-noir-500 line-clamp-2 mt-1 leading-relaxed">
+            <p className="text-xs text-noir-500 dark:text-noir-400 line-clamp-2 mt-1 leading-relaxed">
               {item.description}
             </p>
           </div>
 
           <div className="flex items-center gap-2 pt-2">
-            <span className="font-mono font-bold text-sm text-black">
+            <span className="font-mono font-bold text-sm text-black dark:text-white">
               {formatCurrency(item.price)}
             </span>
             {item.compare_at_price && (
-              <span className="font-mono text-xs text-noir-400 line-through">
+              <span className="font-mono text-xs text-noir-400 dark:text-noir-500 line-through">
                 {formatCurrency(item.compare_at_price)}
               </span>
             )}
@@ -87,7 +87,7 @@ export default function FoodItemCard({ item, restaurant }: FoodItemCardProps) {
         </div>
 
         {/* Right Photo & Add Button */}
-        <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-xl overflow-hidden bg-noir-100 flex-shrink-0">
+        <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-xl overflow-hidden bg-noir-100 dark:bg-noir-800 flex-shrink-0">
           <Image
             src={item.image_url}
             alt={item.name}
@@ -104,8 +104,8 @@ export default function FoodItemCard({ item, restaurant }: FoodItemCardProps) {
                 justAdded
                   ? 'bg-emerald-600 text-white'
                   : item.is_available
-                  ? 'bg-black text-white hover:bg-noir-800 hover:scale-105'
-                  : 'bg-noir-300 text-noir-600 cursor-not-allowed'
+                  ? 'bg-black text-white dark:bg-white dark:text-black hover:bg-noir-800 dark:hover:bg-noir-200 hover:scale-105'
+                  : 'bg-noir-300 dark:bg-noir-700 text-noir-600 dark:text-noir-400 cursor-not-allowed'
               }`}
             >
               {justAdded ? (
