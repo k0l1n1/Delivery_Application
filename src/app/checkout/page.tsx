@@ -40,6 +40,8 @@ export default function CheckoutPage() {
   const { addresses, addAddress, user } = useAuth();
   const { createOrder } = useOrders();
 
+  const [customerName, setCustomerName] = useState(user?.full_name || '');
+  const [customerPhone, setCustomerPhone] = useState(user?.phone || '');
   const [selectedAddressId, setSelectedAddressId] = useState<string>(
     addresses[0]?.id || ''
   );
@@ -105,8 +107,8 @@ export default function CheckoutPage() {
         const order = createOrder({
           order_number: orderNumber,
           user_id: user?.id || 'guest-user',
-          customer_name: user?.full_name || 'Aman Verma',
-          customer_phone: user?.phone || '+91 98200 54321',
+          customer_name: customerName || user?.full_name || 'Customer',
+          customer_phone: customerPhone || user?.phone || '',
           student_roll_no: studentRoll,
           restaurant_id: restaurantId || 'millet-main',
           restaurant_name: restaurantName || 'MILLET CAFE – Central Hub',
@@ -185,9 +187,9 @@ export default function CheckoutPage() {
             }
           },
           prefill: {
-            name: user?.full_name || 'Aman Verma',
-            email: user?.email || 'student@campus.edu',
-            contact: user?.phone || '9820054321',
+            name: customerName || user?.full_name || '',
+            email: user?.email || '',
+            contact: customerPhone || user?.phone || '',
           },
           theme: { color: '#000000' },
         };
@@ -227,8 +229,8 @@ export default function CheckoutPage() {
     const order = createOrder({
       order_number: orderNumber,
       user_id: user?.id || 'guest-user',
-      customer_name: user?.full_name || 'Aman Verma',
-      customer_phone: user?.phone || '+91 98200 54321',
+      customer_name: customerName || user?.full_name || 'Customer',
+      customer_phone: customerPhone || user?.phone || '',
       student_roll_no: studentRoll,
       restaurant_id: restaurantId || 'millet-main',
       restaurant_name: restaurantName || 'MILLET CAFE – Central Hub',
@@ -287,36 +289,49 @@ export default function CheckoutPage() {
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {addresses.map((addr) => {
-                const isSelected = selectedAddressId === addr.id;
-                return (
-                  <div
-                    key={addr.id}
-                    onClick={() => setSelectedAddressId(addr.id)}
-                    className={`p-4 rounded-2xl border text-xs cursor-pointer transition-colors space-y-1.5 ${
-                      isSelected
-                        ? 'border-black bg-noir-50 text-black shadow-sm'
-                        : 'border-noir-200 hover:border-noir-300 text-noir-700'
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold font-mono text-xs text-black">
-                        {addr.room_number || addr.label}
-                      </span>
-                      {isSelected && <Check className="w-4 h-4 text-black" />}
+            {addresses.length === 0 ? (
+              <div className="p-6 text-center bg-noir-50 rounded-2xl border border-dashed border-noir-300 space-y-2">
+                <p className="text-xs font-semibold text-black">No delivery address saved yet</p>
+                <button
+                  type="button"
+                  onClick={() => setIsAddAddressModalOpen(true)}
+                  className="px-4 py-2 rounded-full bg-black text-white text-xs font-semibold"
+                >
+                  Add Your Delivery Location
+                </button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {addresses.map((addr) => {
+                  const isSelected = selectedAddressId === addr.id;
+                  return (
+                    <div
+                      key={addr.id}
+                      onClick={() => setSelectedAddressId(addr.id)}
+                      className={`p-4 rounded-2xl border text-xs cursor-pointer transition-colors space-y-1.5 ${
+                        isSelected
+                          ? 'border-black bg-noir-50 text-black shadow-sm'
+                          : 'border-noir-200 hover:border-noir-300 text-noir-700'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <span className="font-bold font-mono text-xs text-black">
+                          {addr.room_number || addr.label}
+                        </span>
+                        {isSelected && <Check className="w-4 h-4 text-black" />}
+                      </div>
+                      <p className="font-semibold text-noir-900">{addr.building_name}</p>
+                      <p className="text-[11px] text-noir-500 font-mono">
+                        {addr.block_wing} • {addr.floor}
+                      </p>
+                      {addr.landmark && (
+                        <p className="text-[10px] text-noir-400 italic">Near: {addr.landmark}</p>
+                      )}
                     </div>
-                    <p className="font-semibold text-noir-900">{addr.building_name}</p>
-                    <p className="text-[11px] text-noir-500 font-mono">
-                      {addr.block_wing} • {addr.floor}
-                    </p>
-                    {addr.landmark && (
-                      <p className="text-[10px] text-noir-400 italic">Near: {addr.landmark}</p>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           {/* Step 2: Student Roll No & Instructions */}
@@ -329,25 +344,50 @@ export default function CheckoutPage() {
             </div>
 
             <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-mono uppercase text-noir-500">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    placeholder="Enter your name"
+                    className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-mono uppercase text-noir-500">Phone Number</label>
+                  <input
+                    type="tel"
+                    required
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    placeholder="Enter phone number"
+                    className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs font-mono"
+                  />
+                </div>
+              </div>
+
               <div>
-                <label className="text-xs font-mono uppercase text-noir-500">Student Roll / ID Number</label>
+                <label className="text-xs font-mono uppercase text-noir-500">Roll / ID Number (Optional)</label>
                 <input
                   type="text"
                   value={studentRoll}
                   onChange={(e) => setStudentRoll(e.target.value)}
-                  placeholder="e.g. 2023CSB1042"
+                  placeholder="Optional Student Roll or Employee ID"
                   className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs font-mono uppercase"
                 />
               </div>
 
               <div>
                 <label className="text-xs font-mono uppercase text-noir-500">
-                  Courier Delivery Instructions
+                  Delivery Instructions (Optional)
                 </label>
                 <textarea
                   value={deliveryInstructions}
                   onChange={(e) => setDeliveryInstructions(e.target.value)}
-                  placeholder="e.g. Please leave at the reception desk, or call on mobile on arrival..."
+                  placeholder="Special instructions for the delivery courier..."
                   rows={2}
                   className="w-full mt-1 p-3 rounded-2xl border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-xs text-black"
                 />

@@ -15,12 +15,12 @@ interface OrderContextType {
 const OrderContext = createContext<OrderContextType | undefined>(undefined);
 
 export function OrderProvider({ children }: { children: React.ReactNode }) {
-  const [orders, setOrders] = useState<Order[]>(MOCK_INITIAL_ORDERS);
+  const [orders, setOrders] = useState<Order[]>([]);
 
   // Load orders from localStorage
   useEffect(() => {
     try {
-      const savedOrders = localStorage.getItem('noir_orders');
+      const savedOrders = localStorage.getItem('millet_orders');
       if (savedOrders) {
         setOrders(JSON.parse(savedOrders));
       }
@@ -33,7 +33,7 @@ export function OrderProvider({ children }: { children: React.ReactNode }) {
   const saveOrders = (updated: Order[]) => {
     setOrders(updated);
     try {
-      localStorage.setItem('noir_orders', JSON.stringify(updated));
+      localStorage.setItem('millet_orders', JSON.stringify(updated));
     } catch {
       // ignore
     }

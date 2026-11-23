@@ -102,7 +102,9 @@ export default function ProfilePage() {
                 {user.roll_number || 'Campus Member'}
               </span>
             </div>
-            <p className="text-xs text-noir-500 font-mono">{user.email} • {user.phone}</p>
+            <p className="text-xs text-noir-500 font-mono">
+              {user.email} {user.phone ? `• ${user.phone}` : ''}
+            </p>
           </div>
         </div>
 

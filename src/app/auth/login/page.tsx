@@ -32,16 +32,16 @@ export default function LoginPage() {
   return (
     <div className="max-w-md mx-auto px-4 py-20 space-y-8">
       <div className="text-center space-y-2">
-        <span className="font-mono text-3xl font-black tracking-widest text-black">NOIR</span>
-        <h1 className="text-2xl font-bold tracking-tight text-black">Student Portal Sign In</h1>
+        <span className="font-mono text-3xl font-black tracking-widest text-black">MILLET CAFE</span>
+        <h1 className="text-2xl font-bold tracking-tight text-black">Sign In</h1>
         <p className="text-xs text-noir-500 font-mono">
-          Enter your student credentials to access room food delivery
+          Enter your email to sign in to food ordering
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 bg-white p-6 rounded-3xl border border-noir-200 shadow-subtle">
         <div>
-          <label className="text-xs font-mono uppercase text-noir-500">College / Student Email</label>
+          <label className="text-xs font-mono uppercase text-noir-500">Email Address</label>
           <div className="relative mt-1">
             <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-noir-400" />
             <input
@@ -49,7 +49,7 @@ export default function LoginPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="student@campus.edu"
+              placeholder="e.g. user@campus.edu"
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-noir-300 text-xs focus:outline-none focus:border-black"
             />
           </div>

@@ -84,7 +84,7 @@ export default function RestaurantOwnerDashboard() {
             </h1>
           </div>
           <p className="text-xs text-noir-500 font-mono">
-            Kitchen Incharge: {user?.full_name || 'Mr. Ramesh Chand'} • Serving All Campus Blocks
+            Kitchen Incharge: {user?.full_name || 'Kitchen Staff'}
           </p>
         </div>
 
@@ -119,24 +119,24 @@ export default function RestaurantOwnerDashboard() {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Today&apos;s Sales</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Revenue</p>
           <p className="text-2xl font-bold font-mono text-black">{formatCurrency(totalRevenue)}</p>
-          <p className="text-[11px] text-emerald-600 font-mono">Healthy organic meals</p>
+          <p className="text-[11px] text-emerald-600 font-mono">From recorded orders</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Pending Orders</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Active Orders</p>
           <p className="text-2xl font-bold font-mono text-black">{activeOrdersCount}</p>
-          <p className="text-[11px] text-noir-500 font-mono">Awaiting cooking or dispatch</p>
+          <p className="text-[11px] text-noir-500 font-mono">Awaiting dispatch</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Average Prep Speed</p>
-          <p className="text-2xl font-bold font-mono text-black">9 mins</p>
-          <p className="text-[11px] text-emerald-600 font-mono">Fresh on-demand prep</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Total Orders</p>
+          <p className="text-2xl font-bold font-mono text-black">{restaurantOrders.length}</p>
+          <p className="text-[11px] text-noir-500 font-mono">Lifetime volume</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Student Satisfaction</p>
-          <p className="text-2xl font-bold font-mono text-black">4.95 / 5.0</p>
-          <p className="text-[11px] text-noir-500 font-mono">980 member ratings</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Active Menu Items</p>
+          <p className="text-2xl font-bold font-mono text-black">{items.filter((i) => i.is_available).length} / {items.length}</p>
+          <p className="text-[11px] text-noir-500 font-mono">Available for ordering</p>
         </div>
       </div>
 
@@ -320,33 +320,29 @@ export default function RestaurantOwnerDashboard() {
       {activeTab === 'analytics' && (
         <div className="space-y-6">
           <div className="bg-white p-6 rounded-3xl border border-noir-200 shadow-subtle space-y-4">
-            <h3 className="font-bold text-sm text-black">Delivery Volume by Campus Zone</h3>
-            <div className="h-48 flex items-end gap-4 pt-6 border-b border-noir-200">
-              {[
-                { block: 'Block A', height: '65%', amount: '₹8,500' },
-                { block: 'Block B', height: '95%', amount: '₹14,200' },
-                { block: 'SAC Hub', height: '55%', amount: '₹7,100' },
-                { block: 'Library', height: '85%', amount: '₹11,400' },
-                { block: 'Tech Park', height: '75%', amount: '₹9,800' },
-                { block: 'Sports', height: '60%', amount: '₹7,800' },
-                { block: 'Admin', height: '100%', amount: '₹16,500' },
-              ].map((bar) => (
-                <div key={bar.block} className="flex-1 flex flex-col items-center gap-2 h-full justify-end">
-                  <div
-                    style={{ height: bar.height }}
-                    className="w-full max-w-[40px] bg-black rounded-t-lg hover:bg-noir-800 transition-all cursor-pointer relative group"
-                  >
-                    <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-black text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap font-mono">
-                      {bar.amount}
+            <h3 className="font-bold text-sm text-black">Order Breakdown</h3>
+            {restaurantOrders.length > 0 ? (
+              <div className="divide-y divide-noir-100">
+                {restaurantOrders.map((o) => (
+                  <div key={o.id} className="py-2.5 flex items-center justify-between text-xs">
+                    <div>
+                      <span className="font-mono font-bold text-black">#{o.order_number}</span>
+                      <p className="text-noir-500">
+                        {o.delivery_address.room_number}, {o.delivery_address.building_name}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-mono font-bold text-black">{formatCurrency(o.total_amount)}</span>
+                      <p className="text-[10px] uppercase font-mono text-noir-400">{o.status}</p>
                     </div>
                   </div>
-                  <span className="text-xs font-mono text-noir-500">{bar.block}</span>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-noir-500 font-mono">
-              Peak demand spikes observed between 11:30 PM - 2:30 AM in Library & BH-2.
-            </p>
+                ))}
+              </div>
+            ) : (
+              <div className="py-12 text-center text-xs text-noir-500 font-mono">
+                No orders recorded yet. Live analytics will display here.
+              </div>
+            )}
           </div>
         </div>
       )}

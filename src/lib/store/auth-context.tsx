@@ -2,14 +2,13 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Profile, UserRole, Address } from '@/types/database';
-import { MOCK_ADDRESSES } from '@/lib/data/mock-data';
 
 interface AuthContextType {
   user: Profile | null;
   role: UserRole;
   addresses: Address[];
   isLoading: boolean;
-  login: (email: string, role?: UserRole) => Promise<void>;
+  login: (email: string, role?: UserRole, name?: string) => Promise<void>;
   signup: (email: string, name: string, role?: UserRole) => Promise<void>;
   logout: () => void;
   switchRole: (newRole: UserRole) => void;
@@ -18,95 +17,67 @@ interface AuthContextType {
   deleteAddress: (id: string) => void;
 }
 
-const DEFAULT_USERS: Record<UserRole, Profile> = {
-  customer: {
-    id: 'user-customer-1',
-    email: 'aman.verma@campus.edu',
-    full_name: 'Aman Verma',
-    roll_number: '2023CSB1042',
-    phone: '+91 98200 54321',
-    role: 'customer',
-    avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-    created_at: new Date().toISOString(),
-  },
-  restaurant_owner: {
-    id: 'user-owner-1',
-    email: 'kitchen.manager@campus.edu',
-    full_name: 'Mr. Ramesh Chand (Kitchen Manager)',
-    phone: '+91 98200 88990',
-    role: 'restaurant_owner',
-    avatar_url: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=200&q=80',
-    created_at: new Date().toISOString(),
-  },
-  delivery_partner: {
-    id: 'user-delivery-1',
-    email: 'vikas.runner@campus.edu',
-    full_name: 'Vikas Kumar (Courier)',
-    phone: '+91 98765 11223',
-    role: 'delivery_partner',
-    avatar_url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80',
-    created_at: new Date().toISOString(),
-  },
-  admin: {
-    id: 'user-admin-1',
-    email: 'warden.dining@campus.edu',
-    full_name: 'Prof. S. K. Narayan (Platform Admin)',
-    phone: '+91 99999 00000',
-    role: 'admin',
-    avatar_url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80',
-    created_at: new Date().toISOString(),
-  },
-};
-
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [role, setRole] = useState<UserRole>('customer');
   const [user, setUser] = useState<Profile | null>(null);
-  const [addresses, setAddresses] = useState<Address[]>(MOCK_ADDRESSES);
+  const [addresses, setAddresses] = useState<Address[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     try {
-      const savedRole = localStorage.getItem('noir_user_role') as UserRole;
-      const savedUser = localStorage.getItem('noir_user_profile');
-      const savedAddresses = localStorage.getItem('noir_user_addresses');
+      const savedRole = localStorage.getItem('millet_user_role') as UserRole;
+      const savedUser = localStorage.getItem('millet_user_profile');
+      const savedAddresses = localStorage.getItem('millet_user_addresses');
 
-      if (savedRole && DEFAULT_USERS[savedRole]) {
-        setRole(savedRole);
-        setUser(savedUser ? JSON.parse(savedUser) : DEFAULT_USERS[savedRole]);
+      if (savedUser) {
+        setUser(JSON.parse(savedUser));
+        if (savedRole) setRole(savedRole);
       } else {
-        setUser(DEFAULT_USERS['customer']);
+        setUser(null);
       }
 
       if (savedAddresses) {
         setAddresses(JSON.parse(savedAddresses));
       }
     } catch {
-      setUser(DEFAULT_USERS['customer']);
+      setUser(null);
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const login = async (email: string, targetRole: UserRole = 'customer') => {
+  const login = async (email: string, targetRole: UserRole = 'customer', name?: string) => {
     setIsLoading(true);
-    await new Promise((res) => setTimeout(res, 300));
-    const baseUser = DEFAULT_USERS[targetRole];
+    await new Promise((res) => setTimeout(res, 200));
+    
+    // Format display name from input or email username
+    const displayName =
+      name?.trim() ||
+      email
+        .split('@')[0]
+        .replace(/[._]/g, ' ')
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+
     const loggedInUser: Profile = {
-      ...baseUser,
+      id: `user-${Date.now()}`,
       email,
+      full_name: displayName,
+      role: targetRole,
+      created_at: new Date().toISOString(),
     };
+
     setUser(loggedInUser);
     setRole(targetRole);
-    localStorage.setItem('noir_user_role', targetRole);
-    localStorage.setItem('noir_user_profile', JSON.stringify(loggedInUser));
+    localStorage.setItem('millet_user_role', targetRole);
+    localStorage.setItem('millet_user_profile', JSON.stringify(loggedInUser));
     setIsLoading(false);
   };
 
   const signup = async (email: string, name: string, targetRole: UserRole = 'customer') => {
     setIsLoading(true);
-    await new Promise((res) => setTimeout(res, 300));
+    await new Promise((res) => setTimeout(res, 200));
     const newUser: Profile = {
       id: `user-${Date.now()}`,
       email,
@@ -116,23 +87,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
     setUser(newUser);
     setRole(targetRole);
-    localStorage.setItem('noir_user_role', targetRole);
-    localStorage.setItem('noir_user_profile', JSON.stringify(newUser));
+    localStorage.setItem('millet_user_role', targetRole);
+    localStorage.setItem('millet_user_profile', JSON.stringify(newUser));
     setIsLoading(false);
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('noir_user_profile');
-    localStorage.removeItem('noir_user_role');
+    localStorage.removeItem('millet_user_profile');
+    localStorage.removeItem('millet_user_role');
   };
 
   const switchRole = (newRole: UserRole) => {
-    const updated = DEFAULT_USERS[newRole];
-    setUser(updated);
     setRole(newRole);
-    localStorage.setItem('noir_user_role', newRole);
-    localStorage.setItem('noir_user_profile', JSON.stringify(updated));
+    localStorage.setItem('millet_user_role', newRole);
+    if (user) {
+      const updated = { ...user, role: newRole };
+      setUser(updated);
+      localStorage.setItem('millet_user_profile', JSON.stringify(updated));
+    }
   };
 
   const addAddress = (addrData: Omit<Address, 'id' | 'user_id'>) => {
@@ -154,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     updated.push(newAddr);
     setAddresses(updated);
-    localStorage.setItem('noir_user_addresses', JSON.stringify(updated));
+    localStorage.setItem('millet_user_addresses', JSON.stringify(updated));
   };
 
   const setDefaultAddress = (id: string) => {
@@ -163,7 +136,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       is_default: a.id === id,
     }));
     setAddresses(updated);
-    localStorage.setItem('noir_user_addresses', JSON.stringify(updated));
+    localStorage.setItem('millet_user_addresses', JSON.stringify(updated));
   };
 
   const deleteAddress = (id: string) => {
@@ -172,7 +145,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       updated[0].is_default = true;
     }
     setAddresses(updated);
-    localStorage.setItem('noir_user_addresses', JSON.stringify(updated));
+    localStorage.setItem('millet_user_addresses', JSON.stringify(updated));
   };
 
   return (

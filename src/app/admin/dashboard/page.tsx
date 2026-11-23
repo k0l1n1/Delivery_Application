@@ -68,7 +68,7 @@ export default function AdminDashboard() {
             </h1>
           </div>
           <p className="text-xs text-noir-500 font-mono">
-            Platform Admin: {user?.full_name || 'Prof. S. K. Narayan'}
+            Platform Admin: {user?.full_name || 'Admin User'}
           </p>
         </div>
 
@@ -121,9 +121,11 @@ export default function AdminDashboard() {
           <p className="text-[11px] text-noir-500 font-mono">MILLET CAFE Kitchens</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Active Delivery Couriers</p>
-          <p className="text-2xl font-bold font-mono text-black">12</p>
-          <p className="text-[11px] text-noir-500 font-mono">Covering all wings</p>
+          <p className="text-xs font-mono uppercase text-noir-500">In Transit Orders</p>
+          <p className="text-2xl font-bold font-mono text-black">
+            {orders.filter((o) => o.status === 'out_for_delivery').length}
+          </p>
+          <p className="text-[11px] text-noir-500 font-mono">Active on delivery route</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
           <p className="text-xs font-mono uppercase text-noir-500">Total Deliveries</p>

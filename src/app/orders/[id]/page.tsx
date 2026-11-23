@@ -282,21 +282,23 @@ export default function OrderTrackingPage() {
                 </div>
                 <div>
                   <h4 className="font-bold text-xs text-black">
-                    {order.delivery_partner?.name || 'Vikas Kumar (Courier)'}
+                    {order.delivery_partner?.name || 'Assigned Courier'}
                   </h4>
                   <p className="text-[11px] text-noir-500 font-mono">
-                    {order.delivery_partner?.vehicle_number || 'Campus Cycle #14'} • 4.95★
+                    {order.delivery_partner?.vehicle_number || 'Express Courier'}
                   </p>
                 </div>
               </div>
 
-              <a
-                href="tel:+919876511223"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-noir-300 text-xs font-semibold text-black hover:bg-noir-100 transition-colors"
-              >
-                <Phone className="w-3.5 h-3.5" />
-                <span>Call Courier</span>
-              </a>
+              {order.delivery_partner?.phone && (
+                <a
+                  href={`tel:${order.delivery_partner.phone}`}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-noir-300 text-xs font-semibold text-black hover:bg-noir-100 transition-colors"
+                >
+                  <Phone className="w-3.5 h-3.5" />
+                  <span>Call Courier</span>
+                </a>
+              )}
             </div>
           </div>
         </div>

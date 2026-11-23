@@ -36,14 +36,14 @@ export default function DeliveryDashboard() {
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl sm:text-2xl font-extrabold text-black">
-                {user?.full_name || 'Vikas Kumar'}
+                {user?.full_name || 'Delivery Partner'}
               </h1>
               <span className="text-[10px] font-mono uppercase bg-noir-100 text-black px-2 py-0.5 rounded-full border border-noir-300">
-                Courier #14 (Bicycle)
+                Courier On-Duty
               </span>
             </div>
             <p className="text-xs text-noir-500 font-mono">
-              Assigned Wing: Campus Hub & Academic Blocks • 4.95★
+              Campus Delivery Operations
             </p>
           </div>
         </div>
@@ -51,7 +51,7 @@ export default function DeliveryDashboard() {
         {/* Availability Switch */}
         <div className="flex items-center gap-3 bg-noir-50 border border-noir-300 p-2.5 rounded-2xl self-start sm:self-auto">
           <span className="text-xs font-mono uppercase font-bold text-black">
-            {isAvailable ? 'Courier On-Duty' : 'Off-Duty'}
+            {isAvailable ? 'Courier Active' : 'Off-Duty'}
           </span>
           <button
             onClick={() => setIsAvailable(!isAvailable)}
@@ -71,19 +71,19 @@ export default function DeliveryDashboard() {
       {/* KPI Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Today&apos;s Payout</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Payout Earned</p>
           <p className="text-2xl font-bold font-mono text-black">{formatCurrency(totalEarnings)}</p>
-          <p className="text-[11px] text-emerald-600 font-mono">Credited to courier account</p>
+          <p className="text-[11px] text-emerald-600 font-mono">Calculated from deliveries</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
           <p className="text-xs font-mono uppercase text-noir-500">Deliveries Completed</p>
           <p className="text-2xl font-bold font-mono text-black">{completedOrders.length}</p>
-          <p className="text-[11px] text-noir-500 font-mono">100% on-time delivery</p>
+          <p className="text-[11px] text-noir-500 font-mono">Total drop-offs</p>
         </div>
         <div className="bg-white p-5 rounded-2xl border border-noir-200 shadow-subtle space-y-1">
-          <p className="text-xs font-mono uppercase text-noir-500">Avg. Transit Time</p>
-          <p className="text-2xl font-bold font-mono text-black">6.4 mins</p>
-          <p className="text-[11px] text-emerald-600 font-mono">Kitchen to Drop-off Point</p>
+          <p className="text-xs font-mono uppercase text-noir-500">Active Queue</p>
+          <p className="text-2xl font-bold font-mono text-black">{availableOrders.length}</p>
+          <p className="text-[11px] text-emerald-600 font-mono">Awaiting courier action</p>
         </div>
       </div>
 

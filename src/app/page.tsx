@@ -51,31 +51,11 @@ export default function HomePage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Search & Filter Header Bar */}
+      {/* Header & Search Bar */}
       <div className="space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-mono uppercase tracking-widest text-noir-500">
-                Delivering Across Campus 7:00 AM – 11:00 PM
-              </span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black">
-              Food Menu
-            </h1>
-          </div>
-
-          {/* Quick Info Badges */}
-          <div className="flex items-center gap-2 text-xs font-mono text-noir-600">
-            <span className="bg-noir-100 border border-noir-200 px-3 py-1 rounded-full flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-black" /> 10-15m Delivery
-            </span>
-            <span className="bg-noir-100 border border-noir-200 px-3 py-1 rounded-full flex items-center gap-1.5">
-              <Building2 className="w-3.5 h-3.5 text-black" /> Desk & Doorstep Drop
-            </span>
-          </div>
-        </div>
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-black">
+          Food Menu
+        </h1>
 
         {/* Search Bar */}
         <div className="relative">
@@ -84,7 +64,7 @@ export default function HomePage() {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search millet bowls, ragi wraps, cold brews, bajra burgers..."
+            placeholder="Search menu..."
             className="w-full pl-11 pr-10 py-3 rounded-full border border-noir-300 bg-noir-50 focus:bg-white focus:outline-none focus:border-black text-sm text-black placeholder:text-noir-400 transition-all shadow-subtle"
           />
           {searchQuery && (

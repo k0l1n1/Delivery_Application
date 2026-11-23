@@ -33,10 +33,10 @@ export default function SignupPage() {
   return (
     <div className="max-w-md mx-auto px-4 py-20 space-y-8">
       <div className="text-center space-y-2">
-        <span className="font-mono text-3xl font-black tracking-widest text-black">NOIR</span>
-        <h1 className="text-2xl font-bold tracking-tight text-black">Register Membership</h1>
+        <span className="font-mono text-3xl font-black tracking-widest text-black">MILLET CAFE</span>
+        <h1 className="text-2xl font-bold tracking-tight text-black">Create Account</h1>
         <p className="text-xs text-noir-500 font-mono">
-          Join the private network for fine culinary delivery
+          Order wholesome meals delivered across campus
         </p>
       </div>
 
@@ -50,7 +50,7 @@ export default function SignupPage() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Alexander Vance"
+              placeholder="e.g. John Doe"
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-noir-300 text-xs focus:outline-none focus:border-black"
             />
           </div>
@@ -65,14 +65,14 @@ export default function SignupPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="alexander@noir.luxury"
+              placeholder="e.g. user@campus.edu"
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-noir-300 text-xs focus:outline-none focus:border-black"
             />
           </div>
         </div>
 
         <div>
-          <label className="text-xs font-mono uppercase text-noir-500">Security Passcode</label>
+          <label className="text-xs font-mono uppercase text-noir-500">Password</label>
           <div className="relative mt-1">
             <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-noir-400" />
             <input
@@ -93,10 +93,10 @@ export default function SignupPage() {
             onChange={(e) => setRole(e.target.value as UserRole)}
             className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs focus:outline-none focus:border-black bg-white"
           >
-            <option value="customer">Customer Connoisseur</option>
-            <option value="restaurant_owner">Culinary Atelier (Restaurant Owner)</option>
-            <option value="delivery_partner">Electric Delivery Partner</option>
-            <option value="admin">Platform Governance</option>
+            <option value="customer">Customer</option>
+            <option value="restaurant_owner">Kitchen Staff</option>
+            <option value="delivery_partner">Delivery Courier</option>
+            <option value="admin">Administrator</option>
           </select>
         </div>
 
