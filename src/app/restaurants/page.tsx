@@ -148,7 +148,7 @@ function RestaurantListingContent() {
               : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
           }`}
         >
-          All Food Items
+          All
         </button>
         {MOCK_CATEGORIES.map((cat) => (
           <button

@@ -12,7 +12,6 @@ import {
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [filterVegOnly, setFilterVegOnly] = useState<boolean>(false);
 
   // Flatten all campus food items
   const allFoodItems = useMemo(() => {
@@ -27,8 +26,6 @@ export default function HomePage() {
   // Filter food items
   const filteredItems = useMemo(() => {
     return allFoodItems.filter(({ item }) => {
-      if (filterVegOnly && !item.is_veg) return false;
-
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const matchName = item.name.toLowerCase().includes(q);
@@ -37,15 +34,61 @@ export default function HomePage() {
         if (!matchName && !matchDesc && !matchCat) return false;
       }
 
-      if (selectedCategory !== 'all') {
-        const catObj = MOCK_CATEGORIES.find((c) => c.slug === selectedCategory);
-        const catName = catObj?.name.toLowerCase() || selectedCategory.toLowerCase();
-        if (item.category_name?.toLowerCase() !== catName) return false;
+      if (selectedCategory === 'all') return true;
+
+      if (selectedCategory === 'combo') {
+        return (
+          item.category_name?.toLowerCase() === 'combo' ||
+          item.slug.includes('combo') ||
+          item.name.toLowerCase().includes('combo')
+        );
+      }
+
+      if (selectedCategory === 'non-veg') {
+        return !item.is_veg || item.category_name?.toLowerCase() === 'non veg';
+      }
+
+      if (selectedCategory === 'veg') {
+        return item.is_veg || item.category_name?.toLowerCase() === 'veg';
+      }
+
+      if (selectedCategory === 'drinks') {
+        return (
+          item.category_name?.toLowerCase() === 'drinks' ||
+          item.slug.includes('brew') ||
+          item.slug.includes('juice') ||
+          item.slug.includes('detox') ||
+          item.slug.includes('coffee') ||
+          item.slug.includes('tea') ||
+          item.slug.includes('buttermilk') ||
+          item.slug.includes('chaas') ||
+          item.name.toLowerCase().includes('brew') ||
+          item.name.toLowerCase().includes('juice') ||
+          item.name.toLowerCase().includes('tea') ||
+          item.name.toLowerCase().includes('coffee')
+        );
+      }
+
+      if (selectedCategory === 'snacks') {
+        return (
+          item.category_name?.toLowerCase() === 'snacks' ||
+          item.slug.includes('wrap') ||
+          item.slug.includes('roll') ||
+          item.slug.includes('burger') ||
+          item.slug.includes('brownie') ||
+          item.slug.includes('snack') ||
+          item.slug.includes('tikka') ||
+          item.name.toLowerCase().includes('wrap') ||
+          item.name.toLowerCase().includes('roll') ||
+          item.name.toLowerCase().includes('burger') ||
+          item.name.toLowerCase().includes('brownie') ||
+          item.name.toLowerCase().includes('snack')
+        );
       }
 
       return true;
     });
-  }, [allFoodItems, searchQuery, selectedCategory, filterVegOnly]);
+  }, [allFoodItems, searchQuery, selectedCategory]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
@@ -76,8 +119,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Food Categories Strip & Veg Filter */}
-      <div className="flex items-center justify-between gap-4 border-b border-noir-200 pb-3">
+      {/* Food Categories Strip */}
+      <div className="border-b border-noir-200 pb-3">
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-1">
           <button
             onClick={() => setSelectedCategory('all')}
@@ -87,7 +130,7 @@ export default function HomePage() {
                 : 'bg-noir-100 text-noir-700 hover:bg-noir-200'
             }`}
           >
-            All Items ({allFoodItems.length})
+            All
           </button>
           {MOCK_CATEGORIES.map((cat) => (
             <button
@@ -103,21 +146,6 @@ export default function HomePage() {
             </button>
           ))}
         </div>
-
-        {/* Veg Only Switch */}
-        <button
-          onClick={() => setFilterVegOnly(!filterVegOnly)}
-          className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold transition-colors flex-shrink-0 ${
-            filterVegOnly
-              ? 'border-emerald-600 bg-emerald-50 text-emerald-800'
-              : 'border-noir-300 bg-white text-noir-700 hover:bg-noir-50'
-          }`}
-        >
-          <span className="w-2.5 h-2.5 rounded-full border border-emerald-600 flex items-center justify-center p-0.5">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
-          </span>
-          <span>Veg Only</span>
-        </button>
       </div>
 
       {/* Discounts Notice */}
@@ -140,7 +168,9 @@ export default function HomePage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between text-xs font-mono text-noir-500">
           <span>{filteredItems.length} Dishes Available for Delivery</span>
-          {filterVegOnly && <span className="text-emerald-700 font-bold">Showing Pure Veg Only</span>}
+          {selectedCategory !== 'all' && (
+            <span className="text-black font-semibold capitalize">Filter: {selectedCategory.replace('-', ' ')}</span>
+          )}
         </div>
 
         {filteredItems.length > 0 ? (
@@ -156,7 +186,6 @@ export default function HomePage() {
               onClick={() => {
                 setSearchQuery('');
                 setSelectedCategory('all');
-                setFilterVegOnly(false);
               }}
               className="px-5 py-2 rounded-full bg-black text-white text-xs font-semibold"
             >
