@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/store/auth-context';
-import { UserRole } from '@/types/database';
 import { Lock, Mail, User, ArrowRight } from 'lucide-react';
 
 export default function SignupPage() {
@@ -13,7 +12,6 @@ export default function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<UserRole>('customer');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -21,13 +19,10 @@ export default function SignupPage() {
     if (!name || !email) return;
 
     setLoading(true);
-    await signup(email, name, role);
+    await signup(email, name, 'customer');
     setLoading(false);
 
-    if (role === 'restaurant_owner') router.push('/restaurant/dashboard');
-    else if (role === 'delivery_partner') router.push('/delivery/dashboard');
-    else if (role === 'admin') router.push('/admin/dashboard');
-    else router.push('/');
+    router.push('/');
   };
 
   return (
@@ -84,20 +79,6 @@ export default function SignupPage() {
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-noir-300 text-xs focus:outline-none focus:border-black"
             />
           </div>
-        </div>
-
-        <div>
-          <label className="text-xs font-mono uppercase text-noir-500">Account Type</label>
-          <select
-            value={role}
-            onChange={(e) => setRole(e.target.value as UserRole)}
-            className="w-full mt-1 p-2.5 rounded-xl border border-noir-300 text-xs focus:outline-none focus:border-black bg-white"
-          >
-            <option value="customer">Customer</option>
-            <option value="restaurant_owner">Kitchen Staff</option>
-            <option value="delivery_partner">Delivery Courier</option>
-            <option value="admin">Administrator</option>
-          </select>
         </div>
 
         <button
