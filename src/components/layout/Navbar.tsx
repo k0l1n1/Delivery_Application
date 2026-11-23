@@ -2,19 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useCart } from '@/lib/store/cart-store';
 import { useAuth } from '@/lib/store/auth-context';
 import { HOSTEL_LIST } from '@/lib/data/mock-data';
 import {
   ShoppingBag,
   Building2,
-  Search,
   User,
   ChevronDown,
-  Menu,
-  X,
-  Compass,
   Clock,
   LogOut,
   Settings,
@@ -22,10 +17,8 @@ import {
 } from 'lucide-react';
 
 export default function Navbar() {
-  const pathname = usePathname();
   const { itemCount } = useCart();
   const { user, logout } = useAuth();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [currentHostel, setCurrentHostel] = useState(HOSTEL_LIST[1]); // Boys Hostel 2 (Aravali)
   const [hostelSelectorOpen, setHostelSelectorOpen] = useState(false);
@@ -34,9 +27,9 @@ export default function Navbar() {
     <header className="sticky top-[37px] z-40 bg-white/95 backdrop-blur-md border-b border-noir-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo & Hostel Selector */}
-          <div className="flex items-center gap-5">
-            <Link href="/" className="flex items-center gap-2 group">
+          {/* 1. Name & 2. Location that you choose */}
+          <div className="flex items-center gap-4 sm:gap-6">
+            <Link href="/" className="flex items-center gap-2 group flex-shrink-0">
               <span className="font-mono text-2xl font-black tracking-widest text-black">NOIR</span>
               <span className="text-[10px] uppercase font-mono tracking-widest bg-black text-white px-1.5 py-0.5 rounded">
                 HOSTEL
@@ -44,14 +37,16 @@ export default function Navbar() {
             </Link>
 
             {/* Hostel Location Selector */}
-            <div className="relative hidden md:block">
+            <div className="relative">
               <button
                 onClick={() => setHostelSelectorOpen(!hostelSelectorOpen)}
                 className="flex items-center gap-2 px-3 py-1.5 text-xs text-noir-700 bg-noir-100 hover:bg-noir-200 rounded-full border border-noir-200 transition-colors"
               >
-                <Building2 className="w-3.5 h-3.5 text-black" />
-                <span className="font-medium text-black truncate max-w-[190px]">{currentHostel}</span>
-                <ChevronDown className="w-3 h-3 text-noir-500" />
+                <Building2 className="w-3.5 h-3.5 text-black flex-shrink-0" />
+                <span className="font-medium text-black truncate max-w-[140px] sm:max-w-[220px]">
+                  {currentHostel}
+                </span>
+                <ChevronDown className="w-3 h-3 text-noir-500 flex-shrink-0" />
               </button>
 
               {hostelSelectorOpen && (
@@ -72,7 +67,7 @@ export default function Navbar() {
                         }`}
                       >
                         <span className="truncate">{h}</span>
-                        {currentHostel === h && <span className="text-[9px] uppercase font-mono">Delivering Here</span>}
+                        {currentHostel === h && <span className="text-[9px] uppercase font-mono">Selected</span>}
                       </button>
                     ))}
                   </div>
@@ -81,59 +76,13 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Quick Nav Links */}
-          <div className="hidden lg:flex items-center gap-6">
-            <Link
-              href="/restaurants"
-              className={`flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
-                pathname === '/restaurants' ? 'text-black border-b-2 border-black pb-0.5' : 'text-noir-600 hover:text-black'
-              }`}
-            >
-              <Compass className="w-3.5 h-3.5" />
-              All Campus Food
-            </Link>
-
-            <Link
-              href="/restaurants?category=midnight-snacks"
-              className="text-xs font-semibold uppercase tracking-wider text-noir-600 hover:text-black transition-colors"
-            >
-              Midnight Maggi
-            </Link>
-            <Link
-              href="/restaurants?category=rolls"
-              className="text-xs font-semibold uppercase tracking-wider text-noir-600 hover:text-black transition-colors"
-            >
-              Kathi Rolls
-            </Link>
-            <Link
-              href="/restaurants?category=biryani"
-              className="text-xs font-semibold uppercase tracking-wider text-noir-600 hover:text-black transition-colors"
-            >
-              Dum Biryani
-            </Link>
-            <Link
-              href="/restaurants?category=chai-coffee"
-              className="text-xs font-semibold uppercase tracking-wider text-noir-600 hover:text-black transition-colors"
-            >
-              Chai & Coffee
-            </Link>
-
-            <Link
-              href="/search"
-              className="flex items-center gap-2 px-3 py-1.5 text-xs text-noir-500 bg-noir-100 hover:bg-noir-200 rounded-full border border-noir-200 w-48 transition-colors"
-            >
-              <Search className="w-3.5 h-3.5 text-noir-400" />
-              <span>Search snacks or thali...</span>
-            </Link>
-          </div>
-
-          {/* Right Action Icons: Cart, Profile */}
-          <div className="flex items-center gap-4">
-            {/* Cart Link */}
+          {/* 3. Cart Option & 4. Account Option ONLY */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            {/* Cart Option */}
             <Link
               href="/cart"
               className="relative p-2.5 rounded-full border border-noir-200 bg-white hover:bg-noir-50 transition-colors flex items-center justify-center text-black"
-              aria-label="View Food Bag"
+              aria-label="View Food Cart"
             >
               <ShoppingBag className="w-5 h-5" />
               {itemCount > 0 && (
@@ -143,14 +92,16 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Profile Dropdown */}
+            {/* Account Option */}
             {user ? (
               <div className="relative">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   className="flex items-center gap-2 p-1.5 pl-2.5 rounded-full border border-noir-200 bg-noir-50 hover:bg-noir-100 transition-colors"
                 >
-                  <span className="text-xs font-medium text-black hidden sm:inline">{user.full_name.split(' ')[0]}</span>
+                  <span className="text-xs font-medium text-black hidden sm:inline">
+                    {user.full_name.split(' ')[0]}
+                  </span>
                   <div className="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center text-xs font-bold font-mono">
                     {user.full_name.charAt(0)}
                   </div>
@@ -205,7 +156,7 @@ export default function Navbar() {
                         className="flex items-center gap-2.5 px-3 py-2 text-xs text-noir-800 hover:bg-noir-100 rounded-lg transition-colors"
                       >
                         <Settings className="w-4 h-4 text-noir-500" />
-                        Campus Dining Administration
+                        Campus Dining Admin
                       </Link>
                     </div>
 
@@ -225,78 +176,16 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/auth/login"
-                  className="px-4 py-2 text-xs font-semibold text-black hover:bg-noir-100 rounded-full transition-colors"
-                >
-                  Student Login
-                </Link>
-              </div>
+              <Link
+                href="/auth/login"
+                className="px-4 py-2 text-xs font-semibold text-black hover:bg-noir-100 border border-noir-300 rounded-full transition-colors"
+              >
+                Sign In
+              </Link>
             )}
-
-            {/* Mobile Drawer Trigger */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-noir-700 hover:text-black rounded-lg border border-noir-200"
-              aria-label="Toggle navigation menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
           </div>
         </div>
       </div>
-
-      {/* Mobile Drawer */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden border-t border-noir-200 bg-white px-4 py-4 space-y-3">
-          <Link
-            href="/search"
-            onClick={() => setMobileMenuOpen(false)}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-noir-600 bg-noir-100 rounded-xl"
-          >
-            <Search className="w-4 h-4" />
-            <span>Search Maggi, biryani, rolls, coffee...</span>
-          </Link>
-          <div className="flex flex-col space-y-2 pt-2">
-            <Link
-              href="/restaurants"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-sm font-medium text-black hover:bg-noir-100 rounded-lg"
-            >
-              All Food Outlets
-            </Link>
-            <Link
-              href="/restaurants?category=midnight-snacks"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-sm font-medium text-noir-700 hover:bg-noir-100 rounded-lg"
-            >
-              Midnight Maggi & Fries
-            </Link>
-            <Link
-              href="/restaurants?category=rolls"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-sm font-medium text-noir-700 hover:bg-noir-100 rounded-lg"
-            >
-              Kathi Rolls & Wraps
-            </Link>
-            <Link
-              href="/restaurants?category=thalis"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-sm font-medium text-noir-700 hover:bg-noir-100 rounded-lg"
-            >
-              Mess Upgrade Thalis
-            </Link>
-            <Link
-              href="/profile"
-              onClick={() => setMobileMenuOpen(false)}
-              className="px-3 py-2 text-sm font-medium text-noir-700 hover:bg-noir-100 rounded-lg"
-            >
-              My Hostel Room & Orders
-            </Link>
-          </div>
-        </div>
-      )}
     </header>
   );
 }
