@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { MOCK_CATEGORIES, MOCK_RESTAURANTS } from '@/lib/data/mock-data';
 import FoodItemCard from '@/components/restaurant/FoodItemCard';
 import {
@@ -11,6 +11,22 @@ import {
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
+  useEffect(() => {
+    const handleUrlCategory = () => {
+      if (typeof window !== 'undefined') {
+        const params = new URLSearchParams(window.location.search);
+        const cat = params.get('category');
+        if (cat && ['combo', 'non-veg', 'veg', 'drinks', 'snacks', 'all'].includes(cat)) {
+          setSelectedCategory(cat);
+        }
+      }
+    };
+
+    handleUrlCategory();
+    window.addEventListener('popstate', handleUrlCategory);
+    return () => window.removeEventListener('popstate', handleUrlCategory);
+  }, []);
 
   // Flatten all campus food items
   const allFoodItems = useMemo(() => {
