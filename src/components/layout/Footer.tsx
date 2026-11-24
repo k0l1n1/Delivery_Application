@@ -96,7 +96,7 @@ export default function Footer() {
               <li>Student Activity Complex</li>
             </ul>
             <div className="pt-2 text-xs font-mono text-noir-500 dark:text-noir-400">
-              Accepted: UPI, Cards & Cash on Delivery
+              Accepted: Razorpay Instant UPI & Cards
             </div>
           </div>
         </div>

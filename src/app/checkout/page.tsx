@@ -11,7 +11,6 @@ import { PaymentMethod } from '@/types/database';
 import { DELIVERY_LOCATIONS } from '@/lib/data/mock-data';
 import {
   CreditCard,
-  Banknote,
   Check,
   Plus,
   Loader2,
@@ -159,43 +158,6 @@ export default function CheckoutPage() {
     setIsProcessing(true);
 
     try {
-      if (paymentMethod === 'cod') {
-        const orderNumber = generateOrderNumber();
-        const order = createOrder({
-          order_number: orderNumber,
-          user_id: user?.id || 'guest-user',
-          customer_name: customerName || user?.full_name || 'Customer',
-          customer_phone: customerPhone || user?.phone || '',
-          student_roll_no: studentRoll,
-          restaurant_id: restaurantId || 'millet-main',
-          restaurant_name: restaurantName || 'MILLET CAFE – Central Hub',
-          delivery_address: selectedAddress,
-          status: 'placed',
-          subtotal_amount: subtotal,
-          delivery_fee: deliveryFee,
-          tax_amount: taxAmount,
-          discount_amount: discountAmount,
-          total_amount: totalAmount,
-          payment_method: 'cod',
-          payment_status: 'pending',
-          special_instructions: deliveryInstructions,
-          items: items.map((item, idx) => ({
-            id: `oi-${Date.now()}-${idx}`,
-            order_id: '',
-            food_item_id: item.food_item_id,
-            food_name: item.name,
-            quantity: item.quantity,
-            unit_price: item.unit_price,
-            total_price: item.total_price,
-            selected_customizations: item.selected_customizations,
-          })),
-        });
-
-        clearCart();
-        router.push(`/orders/${order.id}`);
-        return;
-      }
-
       // Razorpay Payment Flow
       const createRes = await fetch('/api/payments/razorpay/create-order', {
         method: 'POST',
@@ -239,7 +201,7 @@ export default function CheckoutPage() {
             if (verifyData.success) {
               completeAndRedirectOrder('razorpay', 'completed');
             } else {
-              alert('Payment verification failed. Please try again or choose Cash on Delivery.');
+              alert('Payment verification failed. Please try again.');
               setIsProcessing(false);
             }
           },
@@ -458,68 +420,30 @@ export default function CheckoutPage() {
               <div className="w-6 h-6 rounded-full bg-black text-white flex items-center justify-center text-xs font-mono">
                 3
               </div>
-              <h3 className="font-bold text-sm text-black">Payment Preference</h3>
+              <h3 className="font-bold text-sm text-black">Payment Method</h3>
             </div>
 
-            <div className="space-y-3">
-              {/* Razorpay UPI */}
-              <div
-                onClick={() => setPaymentMethod('razorpay')}
-                className={`p-4 rounded-2xl border cursor-pointer transition-colors flex items-center justify-between ${
-                  paymentMethod === 'razorpay'
-                    ? 'border-black bg-noir-50 shadow-sm'
-                    : 'border-noir-200 hover:border-noir-300'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-black text-white">
-                    <CreditCard className="w-4 h-4" />
-                  </div>
-                  <div>
+            <div className="p-4 rounded-2xl border border-black bg-noir-50 shadow-sm flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-xl bg-black text-white">
+                  <CreditCard className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
                     <h4 className="font-bold text-xs text-black">
                       Razorpay Instant UPI & Cards (GPay, PhonePe, Paytm)
                     </h4>
-                    <p className="text-[11px] text-noir-500">
-                      Scan QR or pay via any UPI app directly from your phone.
-                    </p>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold border border-emerald-200">
+                      SECURE
+                    </span>
                   </div>
-                </div>
-                <div
-                  className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                    paymentMethod === 'razorpay' ? 'border-black bg-black text-white' : 'border-noir-300'
-                  }`}
-                >
-                  {paymentMethod === 'razorpay' && <Check className="w-2.5 h-2.5" />}
+                  <p className="text-[11px] text-noir-500 mt-0.5">
+                    Scan QR or pay via any UPI app directly from your phone.
+                  </p>
                 </div>
               </div>
-
-              {/* Cash On Delivery */}
-              <div
-                onClick={() => setPaymentMethod('cod')}
-                className={`p-4 rounded-2xl border cursor-pointer transition-colors flex items-center justify-between ${
-                  paymentMethod === 'cod'
-                    ? 'border-black bg-noir-50 shadow-sm'
-                    : 'border-noir-200 hover:border-noir-300'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-xl bg-noir-800 text-white">
-                    <Banknote className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="font-bold text-xs text-black">Pay Courier upon Delivery (Cash / UPI)</h4>
-                    <p className="text-[11px] text-noir-500">
-                      Hand cash or scan the courier&apos;s UPI QR upon doorstep drop-off.
-                    </p>
-                  </div>
-                </div>
-                <div
-                  className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                    paymentMethod === 'cod' ? 'border-black bg-black text-white' : 'border-noir-300'
-                  }`}
-                >
-                  {paymentMethod === 'cod' && <Check className="w-2.5 h-2.5" />}
-                </div>
+              <div className="w-4 h-4 rounded-full border border-black bg-black text-white flex items-center justify-center">
+                <Check className="w-2.5 h-2.5" />
               </div>
             </div>
           </div>
