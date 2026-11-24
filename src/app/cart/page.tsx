@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/lib/store/cart-store';
+import { useAuth } from '@/lib/store/auth-context';
 import { formatCurrency } from '@/lib/utils';
 import {
   Trash2,
@@ -33,6 +34,7 @@ export default function CartPage() {
     applyCoupon,
     removeCoupon,
   } = useCart();
+  const { user } = useAuth();
 
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
@@ -266,13 +268,28 @@ export default function CartPage() {
               </div>
             </div>
 
-            <Link
-              href="/checkout"
-              className="w-full py-4 rounded-full bg-black text-white dark:bg-white dark:text-black hover:bg-noir-800 dark:hover:bg-noir-200 transition-colors text-xs font-semibold tracking-wide flex items-center justify-center gap-2 shadow-sm"
-            >
-              <span>Proceed to Checkout</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            {user ? (
+              <Link
+                href="/checkout"
+                className="w-full py-4 rounded-full bg-black text-white dark:bg-white dark:text-black hover:bg-noir-800 dark:hover:bg-noir-200 transition-colors text-xs font-semibold tracking-wide flex items-center justify-center gap-2 shadow-sm"
+              >
+                <span>Proceed to Checkout</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            ) : (
+              <div className="space-y-2">
+                <Link
+                  href="/auth/login?redirect=/checkout"
+                  className="w-full py-4 rounded-full bg-black text-white dark:bg-white dark:text-black hover:bg-noir-800 dark:hover:bg-noir-200 transition-colors text-xs font-semibold tracking-wide flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <span>Sign in to Checkout</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <p className="text-[11px] text-center font-mono text-noir-500 dark:text-noir-400">
+                  Account sign-in required to place order
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

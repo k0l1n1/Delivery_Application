@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/store/auth-context';
@@ -13,6 +13,17 @@ export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [redirectPath, setRedirectPath] = useState('/');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const redir = params.get('redirect');
+      if (redir && redir.startsWith('/')) {
+        setRedirectPath(redir);
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +33,7 @@ export default function SignupPage() {
     await signup(email, name, 'customer');
     setLoading(false);
 
-    router.push('/');
+    router.push(redirectPath);
   };
 
   return (
@@ -92,7 +103,10 @@ export default function SignupPage() {
 
         <p className="text-center text-xs text-noir-500 pt-2">
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-black font-semibold underline">
+          <Link
+            href={redirectPath !== '/' ? `/auth/login?redirect=${encodeURIComponent(redirectPath)}` : '/auth/login'}
+            className="text-black font-semibold underline"
+          >
             Sign In
           </Link>
         </p>

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/lib/store/cart-store';
 import { useAuth } from '@/lib/store/auth-context';
@@ -15,6 +16,7 @@ import {
   Plus,
   Loader2,
   Lock,
+  ArrowRight,
 } from 'lucide-react';
 
 declare global {
@@ -36,7 +38,7 @@ export default function CheckoutPage() {
     totalAmount,
     clearCart,
   } = useCart();
-  const { addresses, addAddress, user } = useAuth();
+  const { addresses, addAddress, user, isLoading: authLoading } = useAuth();
   const { createOrder } = useOrders();
 
   const [customerName, setCustomerName] = useState(user?.full_name || '');
@@ -56,6 +58,62 @@ export default function CheckoutPage() {
   const [newFloor, setNewFloor] = useState('2nd Floor');
   const [newRoom, setNewRoom] = useState('');
   const [newLandmark, setNewLandmark] = useState('');
+
+  // Sync user profile once authenticated
+  useEffect(() => {
+    if (user) {
+      if (!customerName && user.full_name) setCustomerName(user.full_name);
+      if (!customerPhone && user.phone) setCustomerPhone(user.phone);
+      if (!studentRoll && user.roll_number) setStudentRoll(user.roll_number);
+    }
+  }, [user]);
+
+  // Auth gate: redirect if unauthenticated
+  useEffect(() => {
+    if (!authLoading && !user) {
+      router.push('/auth/login?redirect=/checkout');
+    }
+  }, [authLoading, user, router]);
+
+  if (authLoading) {
+    return (
+      <div className="max-w-xl mx-auto py-24 px-4 text-center space-y-4">
+        <Loader2 className="w-6 h-6 animate-spin mx-auto text-noir-400" />
+        <p className="text-xs font-mono text-noir-500">Checking authentication...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="max-w-md mx-auto py-24 px-4 text-center space-y-6">
+        <div className="w-16 h-16 rounded-full bg-noir-100 dark:bg-noir-900 border border-noir-200 dark:border-noir-800 flex items-center justify-center mx-auto text-black dark:text-white">
+          <Lock className="w-7 h-7" />
+        </div>
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold tracking-tight text-black dark:text-white">Sign In Required</h2>
+          <p className="text-xs text-noir-500 dark:text-noir-400 font-mono">
+            You must have an account to place and track your campus delivery order.
+          </p>
+        </div>
+        <div className="space-y-3 pt-2">
+          <Link
+            href="/auth/login?redirect=/checkout"
+            className="w-full py-3.5 rounded-full bg-black text-white dark:bg-white dark:text-black hover:bg-noir-800 dark:hover:bg-noir-200 text-xs font-semibold tracking-wide flex items-center justify-center gap-2 transition-colors"
+          >
+            <span>Sign In to Continue</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/auth/signup?redirect=/checkout"
+            className="w-full py-3.5 rounded-full border border-noir-300 dark:border-noir-700 text-black dark:text-white hover:bg-noir-50 dark:hover:bg-noir-900 text-xs font-semibold tracking-wide flex items-center justify-center transition-colors"
+          >
+            Create New Account
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (items.length === 0) {
     return (
